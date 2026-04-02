@@ -755,7 +755,7 @@ export default function MinefieldApp() {
               borderRadius: 6, padding: "10px 16px", marginBottom: 10,
               fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center",
             }}>
-              Navigate your piece from <span style={{ color: T.textBright }}>start</span> to <span style={{ color: T.textBright }}>target</span> while <span style={{ color: T.textBright }}>avoiding squares controlled by enemy pieces</span>.
+              <span style={{ color: T.textBright }}>Navigate your piece from start to target while avoiding squares controlled by enemy pieces</span>.
             </div>
             <div style={{
               background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6,
