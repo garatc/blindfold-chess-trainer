@@ -442,6 +442,12 @@ function RevealBoard({ puzzle, userPath, isCorrect }) {
             display: "flex", alignItems: "center", justifyContent: "center",
             background: bg,
           }}>
+            {(isCtrl && !isMine && !isUserPath) && (
+              <span style={{
+                position: "absolute", fontSize: "76%", opacity: 0.5,
+                userSelect: "none", lineHeight: 1,
+              }}>💣</span>
+            )}
             {content}
             {stepNumber != null && (
               <span style={{
