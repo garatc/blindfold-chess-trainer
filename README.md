@@ -1,10 +1,20 @@
-# Minefield ♟️
+# Blindfold Chess Trainer ♟️
 
-A blindfold chess puzzle trainer. A piece is placed on the board — navigate it from its starting square to the target while avoiding mines (enemy pieces and the squares they control). Find the shortest path.
-
-Supports all piece types as navigators (king, queen, rook, bishop, knight) and three difficulty levels.
+A growing collection of blindfold chess training games. No board to look at — pure mental visualization.
 
 **Play online → [garatc.github.io/blindfold-chess-minefield](https://garatc.github.io/blindfold-chess-minefield/)**
+
+---
+
+## Games
+
+### 💣 Blindfold Minefield ★★★
+Navigate your piece from its starting square to a target in the fewest moves — without stepping on any square controlled by enemy pieces. No board is shown. You work entirely from the algebraic description of the position.
+
+### 🎯 Blindfold Sniper ★★☆
+A real chess position is shown, with one white piece highlighted. A random sequence of moves is then announced in algebraic notation — no visual updates. Follow the game in your head and identify which black pieces your tracked piece can capture at the end of the sequence.
+
+*More games coming.*
 
 ---
 
