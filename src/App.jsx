@@ -339,6 +339,14 @@ const GAMES = [
     description: "A position is given with a white piece to track. A random sequence of moves is generated in algebraic notation — no visual updates. Follow the moves in your head and click the black pieces your piece can capture at the end of the sequence.",
     difficulty: "★★☆",
   },
+  {
+    id: "coordinates",
+    title: "Blindfold Coordinates",
+    icon: "🗺️",
+    tagline: "Light or dark?",
+    description: "A square is named — say whether it's light or dark as fast as you can. Score mode: 10 questions, track your accuracy and average time. Streak mode: how far can you go before your first mistake?",
+    difficulty: "★☆☆",
+  },
 ];
 
 function HomeScreen({ onSelect }) {
@@ -1395,9 +1403,272 @@ function SniperGame({ onHome }) {
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GAME 3 — BLINDFOLD COORDINATES
+// ══════════════════════════════════════════════════════════════════════════════
+
+function isLightSquare(sq) {
+  // Light square if (col + row) is odd — e.g. a1=[0,0] is dark, a2=[0,1] is light
+  const c = COLS.indexOf(sq[0]);
+  const r = parseInt(sq[1]) - 1;
+  return (c + r) % 2 === 1;
+}
+
+function randomSquare() {
+  const col = COLS[Math.floor(Math.random() * 8)];
+  const row = Math.floor(Math.random() * 8) + 1;
+  return `${col}${row}`;
+}
+
+const COORD_MODES = { IDLE: 0, PLAYING: 1, RESULT: 2 };
+
+function CoordinatesGame({ onHome }) {
+  const [mode, setMode] = useState("score"); // "score" | "streak"
+  const [phase, setPhase] = useState(COORD_MODES.IDLE);
+  const [square, setSquare] = useState(null);
+  const [feedback, setFeedback] = useState(null); // null | "correct" | "wrong"
+  const [results, setResults] = useState([]); // [{correct, ms}]
+  const [questionStart, setQuestionStart] = useState(null);
+  const [showRules, setShowRules] = useState(false);
+
+  const TOTAL = 10;
+
+  const nextQuestion = useCallback((currentResults) => {
+    // In score mode, stop after TOTAL questions
+    if (mode === "score" && currentResults.length >= TOTAL) {
+      setPhase(COORD_MODES.RESULT);
+      return;
+    }
+    setSquare(randomSquare());
+    setFeedback(null);
+    setQuestionStart(Date.now());
+  }, [mode]);
+
+  const startGame = useCallback(() => {
+    setResults([]);
+    setFeedback(null);
+    setPhase(COORD_MODES.PLAYING);
+    setSquare(randomSquare());
+    setQuestionStart(Date.now());
+  }, []);
+
+  const answer = useCallback((guessLight) => {
+    if (phase !== COORD_MODES.PLAYING || feedback !== null) return;
+    const ms = Date.now() - questionStart;
+    const correct = isLightSquare(square) === guessLight;
+    setFeedback(correct ? "correct" : "wrong");
+
+    if (!correct && mode === "streak") {
+      // Don't add wrong answer to results — streak = current results.length
+      setTimeout(() => setPhase(COORD_MODES.RESULT), 400);
+      return;
+    }
+
+    const newResults = [...results, { correct, ms }];
+    setResults(newResults);
+
+    setTimeout(() => {
+      nextQuestion(newResults);
+    }, 400);
+  }, [phase, feedback, square, questionStart, results, mode, nextQuestion]);
+
+  // Keyboard: L = light, D = dark
+  useEffect(() => {
+    const handler = (e) => {
+      if (phase !== COORD_MODES.PLAYING || feedback !== null) return;
+      if (e.key === "l" || e.key === "L") answer(true);
+      if (e.key === "d" || e.key === "D") answer(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [phase, feedback, answer]);
+
+  // Stats
+  const correct = results.filter(r => r.correct).length;
+  const avgMs = results.length ? Math.round(results.reduce((s, r) => s + r.ms, 0) / results.length) : 0;
+  const streak = results.length; // in streak mode, all results up to first wrong = streak
+
+  const bgColor = feedback === "correct" ? "rgba(60,168,104,0.15)"
+                : feedback === "wrong"   ? "rgba(196,74,60,0.15)"
+                : "transparent";
+
+  return (
+    <AppShell title="COORDINATES" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+      headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
+    >
+      {showRules && (
+        <RulesModal onClose={() => setShowRules(false)}>
+          <RuleSection title="Objective" text="A square name is shown (e.g. f6). Answer whether it is a light or dark square as fast as possible." />
+          <RuleSection title="Score mode" text="Answer 10 questions. At the end you get your score and average response time." />
+          <RuleSection title="Streak mode" text="Keep answering until your first mistake. Your streak length and average time are shown." />
+          <RuleSection title="Controls" text="Click the Light or Dark button — or press L / D on your keyboard." />
+          <RuleSection title="Tip" text="The trick: a square is light if the letter and number are both odd or both even (a1, c1, b2, d2...). Or just memorize the pattern!" />
+        </RulesModal>
+      )}
+
+      <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginRight: 2 }}>MODE</span>
+          <button onClick={() => { setMode("score"); setPhase(COORD_MODES.IDLE); }} style={chipStyle("score", mode)}>Score</button>
+          <button onClick={() => { setMode("streak"); setPhase(COORD_MODES.IDLE); }} style={chipStyle("streak", mode)}>Streak</button>
+        </div>
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", flex: 1 }}>
+
+        {/* IDLE */}
+        {phase === COORD_MODES.IDLE && (
+          <div style={{ animation: "fadeUp 0.3s ease" }}>
+            <div style={{ background: "rgba(196,154,60,0.06)", border: `1px solid rgba(196,154,60,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
+              <span style={{ color: T.textBright }}>
+                {mode === "score"
+                  ? "10 squares, answer as fast as you can. Light or Dark?"
+                  : "Answer until your first mistake. How long can you go?"}
+              </span>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <button onClick={startGame} style={{
+                padding: "14px 48px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 16,
+                fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                animation: "glowPulse 2s infinite",
+              }}>START</button>
+            </div>
+          </div>
+        )}
+
+        {/* PLAYING */}
+        {phase === COORD_MODES.PLAYING && square && (
+          <div style={{ animation: "fadeUp 0.2s ease" }}>
+            {/* Progress */}
+            {mode === "score" && (
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, fontSize: 11, color: T.textDim }}>
+                <span>{results.length + 1} / {TOTAL}</span>
+                <span>{results.filter(r => r.correct).length} correct</span>
+              </div>
+            )}
+            {mode === "streak" && (
+              <div style={{ marginBottom: 16, fontSize: 11, color: T.textDim, textAlign: "center" }}>
+                Streak: <span style={{ color: T.accent, fontWeight: 600 }}>{results.length}</span>
+              </div>
+            )}
+
+            {/* Square display */}
+            <div style={{
+              background: T.panel, border: `1px solid ${feedback === "correct" ? T.green : feedback === "wrong" ? T.red : T.panelBorder}`,
+              borderRadius: 8, padding: "40px 20px", marginBottom: 24,
+              textAlign: "center", transition: "border-color 0.15s, background 0.15s",
+              background: bgColor || T.panel,
+            }}>
+              {feedback === null && (
+                <div style={{ fontSize: 56, fontWeight: 700, color: T.textBright, letterSpacing: 4 }}>{square}</div>
+              )}
+              {feedback === "correct" && (
+                <div style={{ fontSize: 48, color: T.green }}>✓</div>
+              )}
+              {feedback === "wrong" && (
+                <div>
+                  <div style={{ fontSize: 48, color: T.red }}>✗</div>
+                  <div style={{ fontSize: 13, color: T.textDim, marginTop: 8 }}>
+                    {square} is <span style={{ color: T.textBright }}>{isLightSquare(square) ? "light" : "dark"}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={() => answer(true)} disabled={feedback !== null} style={{
+                flex: 1, padding: "18px", border: `1px solid ${T.panelBorder}`, borderRadius: 6,
+                background: "rgba(240,217,181,0.08)", color: "#f0d9b5", fontSize: 15,
+                fontFamily: "inherit", cursor: feedback !== null ? "default" : "pointer",
+                fontWeight: 600, letterSpacing: 1, opacity: feedback !== null ? 0.5 : 1,
+                transition: "opacity 0.15s",
+              }}>
+                ☀️ LIGHT
+              </button>
+              <button onClick={() => answer(false)} disabled={feedback !== null} style={{
+                flex: 1, padding: "18px", border: `1px solid ${T.panelBorder}`, borderRadius: 6,
+                background: "rgba(100,60,30,0.25)", color: "#b58863", fontSize: 15,
+                fontFamily: "inherit", cursor: feedback !== null ? "default" : "pointer",
+                fontWeight: 600, letterSpacing: 1, opacity: feedback !== null ? 0.5 : 1,
+                transition: "opacity 0.15s",
+              }}>
+                🌑 DARK
+              </button>
+            </div>
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: T.textDim }}>
+              or press <span style={{ color: T.text }}>L</span> / <span style={{ color: T.text }}>D</span>
+            </div>
+          </div>
+        )}
+
+        {/* RESULT */}
+        {phase === COORD_MODES.RESULT && (
+          <div style={{ animation: "fadeUp 0.3s ease" }}>
+            <div style={{
+              background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8,
+              padding: "32px 24px", marginBottom: 20, textAlign: "center",
+            }}>
+              {mode === "score" ? (
+                <>
+                  <div style={{ fontSize: 11, color: T.accentDim, letterSpacing: 3, marginBottom: 16 }}>▸ SCORE</div>
+                  <div style={{ fontSize: 48, fontWeight: 700, color: correct === TOTAL ? T.green : T.accent, marginBottom: 4 }}>
+                    {correct} / {TOTAL}
+                  </div>
+                  <div style={{ fontSize: 13, color: T.text, marginBottom: 20 }}>
+                    {correct === TOTAL ? "✓ Perfect!" : `${correct} correct answer${correct !== 1 ? "s" : ""}`}
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center", gap: 32 }}>
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(avgMs / 1000).toFixed(2)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>AVG TIME</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(results.reduce((s,r) => s + r.ms, 0) / 1000).toFixed(1)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>TOTAL TIME</div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 11, color: T.accentDim, letterSpacing: 3, marginBottom: 16 }}>▸ STREAK</div>
+                  <div style={{ fontSize: 64, fontWeight: 700, color: T.accent, marginBottom: 4 }}>{streak}</div>
+                  <div style={{ fontSize: 13, color: T.text, marginBottom: 20 }}>
+                    {streak === 0 ? "First answer was wrong!" : `${streak} correct answer${streak !== 1 ? "s" : ""} in a row`}
+                  </div>
+                  {streak > 0 && (
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(avgMs / 1000).toFixed(2)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>AVG TIME PER ANSWER</div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <button onClick={startGame} style={{
+                padding: "10px 40px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14,
+                fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                animation: "glowPulse 2s infinite",
+              }}>PLAY AGAIN</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
+// ── Root ──────────────────────────────────────────────────────────────────────
+
 export default function App() {
   const [screen, setScreen] = useState("home");
-  if (screen === "minefield") return <MinefieldGame onHome={() => setScreen("home")} />;
-  if (screen === "sniper")    return <SniperGame    onHome={() => setScreen("home")} />;
+  if (screen === "minefield")   return <MinefieldGame    onHome={() => setScreen("home")} />;
+  if (screen === "sniper")      return <SniperGame       onHome={() => setScreen("home")} />;
+  if (screen === "coordinates") return <CoordinatesGame  onHome={() => setScreen("home")} />;
   return <HomeScreen onSelect={setScreen} />;
 }
