@@ -2,7 +2,7 @@
 
 A growing collection of blindfold chess training games. No board to look at — pure mental visualization.
 
-**Play online → [garatc.github.io/blindfold-chess-minefield](https://garatc.github.io/blindfold-chess-minefield/)**
+**Play online → [garatc.github.io/blindfold-chess-games](https://garatc.github.io/blindfold-chess-games/)**
 
 ---
 
@@ -23,13 +23,13 @@ A real chess position is shown, with one white piece highlighted. A random seque
 Requires [Node.js](https://nodejs.org/) (v18+).
 
 ```bash
-git clone https://github.com/garatc/blindfold-chess-minefield.git
-cd blindfold-chess-minefield
+git clone https://github.com/garatc/blindfold-chess-games.git
+cd blindfold-chess-games
 npm install
 npm run dev
 ```
 
-Then open [http://localhost:5173/blindfold-chess-minefield/](http://localhost:5173/blindfold-chess-minefield/) in your browser.
+Then open [http://localhost:5173/blindfold-chess-games/](http://localhost:5173/blindfold-chess-games/) in your browser.
 
 ---
 
