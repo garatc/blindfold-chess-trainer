@@ -329,7 +329,7 @@ const GAMES = [
     icon: "💣",
     tagline: "Navigate the minefield",
     description: "Move your piece from start to target in the fewest moves — without stepping on any square controlled by enemy pieces. No board. Pure visualization.",
-    difficulty: "★★★",
+    difficulty: "Hard",
   },
   {
     id: "sniper",
@@ -337,7 +337,7 @@ const GAMES = [
     icon: "🎯",
     tagline: "Who's in your crosshairs?",
     description: "A position is given with a white piece to track. A random sequence of moves is generated in algebraic notation — no visual updates. Follow the moves in your head and click the black pieces your piece can capture at the end of the sequence.",
-    difficulty: "★★☆",
+    difficulty: "Medium",
   },
   {
     id: "coordinates",
@@ -345,7 +345,15 @@ const GAMES = [
     icon: "🗺️",
     tagline: "Light or dark?",
     description: "A square is named — say whether it's light or dark as fast as you can. Score mode: 10 questions, track your accuracy and average time. Streak mode: how far can you go before your first mistake?",
-    difficulty: "★☆☆",
+    difficulty: "Easy",
+  },
+  {
+    id: "fork",
+    title: "Blindfold Fork Finder",
+    icon: "⚔️",
+    tagline: "Two for the price of one",
+    description: "A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. No board. Pure calculation.",
+    difficulty: "Easy",
   },
 ];
 
@@ -362,26 +370,22 @@ function HomeScreen({ onSelect }) {
         <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD</h1>
         <div style={{ fontSize: 11, color: T.textDim, letterSpacing: 4, marginTop: 4 }}>CHESS TRAINING SUITE</div>
         <div style={{ height: 1, background: `linear-gradient(90deg, ${T.accent}50, transparent 70%)`, margin: "20px 0 32px" }} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           {GAMES.map(game => (
             <div key={game.id} onClick={() => onSelect(game.id)}
-              style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8, padding: "24px", cursor: "pointer", transition: "border-color 0.2s" }}
+              style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8, padding: "18px 16px", cursor: "pointer", transition: "border-color 0.2s", display: "flex", flexDirection: "column" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = T.accent}
               onMouseLeave={e => e.currentTarget.style.borderColor = T.panelBorder}
             >
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
-                <div style={{ fontSize: 36, lineHeight: 1, flexShrink: 0 }}>{game.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: T.textBright, letterSpacing: 1 }}>{game.title}</div>
-                    <div style={{ fontSize: 12, color: T.accentDim }}>{game.difficulty}</div>
-                  </div>
-                  <div style={{ fontSize: 10, color: T.accent, letterSpacing: 2, marginBottom: 10 }}>{game.tagline.toUpperCase()}</div>
-                  <div style={{ fontSize: 12, color: T.text, lineHeight: 1.7 }}>{game.description}</div>
-                </div>
+              <div style={{ fontSize: 28, lineHeight: 1, marginBottom: 10 }}>{game.icon}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.textBright, letterSpacing: 0.5 }}>{game.title}</div>
+                <div style={{ fontSize: 10, color: game.difficulty === "Hard" ? T.red : game.difficulty === "Medium" ? T.accent : T.green, flexShrink: 0, marginLeft: 6, fontWeight: 600 }}>{game.difficulty}</div>
               </div>
-              <div style={{ marginTop: 18, textAlign: "right" }}>
-                <span style={{ fontSize: 11, color: T.accent, border: `1px solid ${T.accentDim}`, borderRadius: 4, padding: "4px 12px", letterSpacing: 1 }}>PLAY →</span>
+              <div style={{ fontSize: 9, color: T.accent, letterSpacing: 2, marginBottom: 8 }}>{game.tagline.toUpperCase()}</div>
+              <div style={{ fontSize: 11, color: T.text, lineHeight: 1.6, flex: 1 }}>{game.description}</div>
+              <div style={{ marginTop: 14, textAlign: "right" }}>
+                <span style={{ fontSize: 10, color: T.accent, border: `1px solid ${T.accentDim}`, borderRadius: 4, padding: "3px 10px", letterSpacing: 1 }}>PLAY →</span>
               </div>
             </div>
           ))}
@@ -1663,6 +1667,442 @@ function CoordinatesGame({ onHome }) {
   );
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// GAME 4 — BLINDFOLD FORK FINDER
+// ══════════════════════════════════════════════════════════════════════════════
+
+const FORK_PIECES = ["knight", "bishop"];
+
+function forkSquares(attackerType, targets) {
+  // Returns all squares from which attackerType attacks >= 2 of the target squares
+  const allSq = [];
+  for (let c = 0; c < 8; c++) for (let r = 0; r < 8; r++) allSq.push([c, r]);
+
+  const targetSet = new Set(targets.map(t => sqKey(t)));
+
+  return allSq.filter(sq => {
+    // Can't fork from a square occupied by a target
+    if (targetSet.has(sqKey(sq))) return false;
+    const occupied = new Set(targets.map(t => sqKey(t)));
+    const attacks = pieceMoves(attackerType, sq, occupied);
+    const hits = attacks.filter(a => targetSet.has(sqKey(a))).length;
+    return hits >= 2;
+  });
+}
+
+function generateForkPuzzle() {
+  const allSq = [];
+  for (let c = 0; c < 8; c++) for (let r = 0; r < 8; r++) allSq.push([c, r]);
+
+  for (let attempt = 0; attempt < 500; attempt++) {
+    const attackerType = FORK_PIECES[Math.floor(Math.random() * FORK_PIECES.length)];
+    const numTargets = 2;
+
+    // Shuffle and pick target squares
+    const shuffled = [...allSq].sort(() => Math.random() - 0.5);
+    const targets = shuffled.slice(0, numTargets);
+
+    // Find fork squares
+    const forks = forkSquares(attackerType, targets);
+
+    // We want puzzles where forks exist (but not too many — keep it interesting)
+    // Also sometimes generate no-fork puzzles (25% of time) to keep player honest
+    const hasFork = forks.length > 0;
+    const wantFork = Math.random() < 0.75;
+
+    if (hasFork !== wantFork) continue;
+
+    return { attackerType, targets, forks, hasFork };
+  }
+
+  // Fallback: guarantee a fork exists
+  const attackerType = "knight";
+  const targets = [[4, 4], [6, 4]]; // e5, g5 — knight on f2/f6/d2/d6 forks both
+  const forks = forkSquares(attackerType, targets);
+  return { attackerType, targets, forks, hasFork: true };
+}
+
+const FORK_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2, RESULT: 3 };
+const FORK_TOTAL = 5;
+
+function ForkGame({ onHome }) {
+  const [mode, setMode] = useState("score");
+  const [phase, setPhase] = useState(FORK_PHASES.IDLE);
+  const [puzzle, setPuzzle] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [feedback, setFeedback] = useState(null); // null | { correct, userSq, message }
+  const [results, setResults] = useState([]);
+  const [questionStart, setQuestionStart] = useState(null);
+  const [showRules, setShowRules] = useState(false);
+  const inputRef = useRef(null);
+
+  const nextQuestion = useCallback((currentResults) => {
+    if (mode === "score" && currentResults.length >= FORK_TOTAL) {
+      setPhase(FORK_PHASES.RESULT);
+      return;
+    }
+    setPuzzle(generateForkPuzzle());
+    setInputValue("");
+    setFeedback(null);
+    setPhase(FORK_PHASES.QUESTION);
+    setQuestionStart(Date.now());
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }, [mode]);
+
+  const startGame = useCallback(() => {
+    setResults([]);
+    setFeedback(null);
+    setInputValue("");
+    nextQuestion([]);
+  }, [nextQuestion]);
+
+  const [pendingResults, setPendingResults] = useState(null); // stored when waiting for user to click Next
+
+  const submit = useCallback(() => {
+    if (!puzzle || phase !== FORK_PHASES.QUESTION) return;
+    const ms = Date.now() - questionStart;
+    const raw = inputValue.trim().toLowerCase();
+
+    // "no" / "none" answer
+    if (raw === "no" || raw === "none" || raw === "-") {
+      const correct = !puzzle.hasFork;
+      const newResults = [...results, { correct, ms }];
+      setResults(newResults);
+      setFeedback({
+        correct,
+        message: correct
+          ? "✓ Correct — no fork exists."
+          : `✗ A fork existed! e.g. ${sqName(puzzle.forks[0])}`,
+      });
+      setPhase(FORK_PHASES.FEEDBACK);
+      if (!correct && mode === "score") { setPendingResults(newResults); return; }
+      if (!correct && mode === "streak") return;
+      setTimeout(() => nextQuestion(newResults), 1200);
+      return;
+    }
+
+    // Square answer
+    const sq = parseSq(raw);
+    if (!sq) {
+      setFeedback({ correct: false, message: `"${raw}" is not a valid square. Type a square (e.g. f4) or "no".` });
+      setPhase(FORK_PHASES.FEEDBACK);
+      setTimeout(() => {
+        setFeedback(null);
+        setPhase(FORK_PHASES.QUESTION);
+        setTimeout(() => inputRef.current?.focus(), 50);
+      }, 1500);
+      return;
+    }
+
+    // Check if the square is actually a fork
+    const isFork = puzzle.forks.some(f => sqKey(f) === sqKey(sq));
+    const correct = isFork;
+    const newResults = [...results, { correct, ms }];
+    setResults(newResults);
+
+    let message;
+    if (correct) {
+      const hits = puzzle.targets.filter(t => {
+        const occ = new Set(puzzle.targets.map(t2 => sqKey(t2)));
+        return pieceMoves(puzzle.attackerType, sq, occ).some(a => sqKey(a) === sqKey(t));
+      });
+      message = `✓ ${sqName(sq)} forks ${hits.map(sqName).join(" and ")}!`;
+    } else if (!puzzle.hasFork) {
+      message = `✗ No fork exists from ${sqName(sq)} — and there's no fork on this board.`;
+    } else {
+      message = `✗ ${sqName(sq)} doesn't fork. Try ${sqName(puzzle.forks[0])}.`;
+    }
+
+    setFeedback({ correct, message });
+    setPhase(FORK_PHASES.FEEDBACK);
+
+    if (!correct && mode === "score") { setPendingResults(newResults); return; }
+    if (!correct && mode === "streak") return;
+    setTimeout(() => nextQuestion(newResults), 1200);
+  }, [puzzle, phase, inputValue, questionStart, results, mode, nextQuestion]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === "Enter") submit();
+  }, [submit]);  const correct = results.filter(r => r.correct).length;
+  const avgMs = results.length ? Math.round(results.reduce((s, r) => s + r.ms, 0) / results.length) : 0;
+  const streak = results.length;
+
+  // When streak ends — let user read feedback before showing result
+
+  return (
+    <AppShell title="FORK FINDER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+      headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
+    >
+      {showRules && (
+        <RulesModal onClose={() => setShowRules(false)}>
+          <RuleSection title="Objective" text="A white piece type and 2 black pieces (with their squares) are given. Find a square from which your piece attacks both black pieces simultaneously — a fork." />
+          <RuleSection title="Answering" text='Type the fork square (e.g. "f4") and press Enter or ✓. If no fork exists, click "No fork".' />
+          <RuleSection title="Multiple forks" text="If several fork squares exist, any valid one is accepted. The total number of solutions is shown after each question." />
+          <RuleSection title="Score mode" text="10 questions. Score and average response time shown at the end." />
+          <RuleSection title="Streak mode" text="Answer until your first mistake. Your streak and average time are shown." />
+          <RuleSection title="Pieces" text="Only knights and bishops appear as the attacking piece. The bishop is blocked by other pieces when checking attacks." />
+        </RulesModal>
+      )}
+
+      {/* Config */}
+      <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginRight: 2 }}>MODE</span>
+          <button onClick={() => { setMode("score"); setPhase(FORK_PHASES.IDLE); }} style={chipStyle("score", mode)}>Score</button>
+          <button onClick={() => { setMode("streak"); setPhase(FORK_PHASES.IDLE); }} style={chipStyle("streak", mode)}>Streak</button>
+        </div>
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", flex: 1 }}>
+
+        {/* IDLE */}
+        {phase === FORK_PHASES.IDLE && (
+          <div style={{ animation: "fadeUp 0.3s ease" }}>
+            <div style={{ background: "rgba(196,154,60,0.06)", border: `1px solid rgba(196,154,60,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
+              <span style={{ color: T.textBright }}>
+                {mode === "score"
+                  ? "5 puzzles. Find the fork square, or answer \"no\" if none exists."
+                  : "Keep going until your first mistake. How long is your streak?"}
+              </span>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <button onClick={startGame} style={{
+                padding: "14px 48px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 16,
+                fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                animation: "glowPulse 2s infinite",
+              }}>START</button>
+            </div>
+          </div>
+        )}
+
+        {/* QUESTION / FEEDBACK */}
+        {(phase === FORK_PHASES.QUESTION || phase === FORK_PHASES.FEEDBACK) && puzzle && (
+          <div style={{ animation: "fadeUp 0.2s ease" }}>
+            {/* Progress */}
+            {mode === "score" && (
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14, fontSize: 11, color: T.textDim }}>
+                <span>{results.length + (phase === FORK_PHASES.FEEDBACK ? 0 : 0) + 1} / {FORK_TOTAL}</span>
+                <span>{correct} correct</span>
+              </div>
+            )}
+            {mode === "streak" && (
+              <div style={{ marginBottom: 14, fontSize: 11, color: T.textDim, textAlign: "center" }}>
+                Streak: <span style={{ color: T.accent, fontWeight: 600 }}>{streak}</span>
+              </div>
+            )}
+
+            {/* Puzzle */}
+            <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: "20px 24px", marginBottom: 16 }}>
+              <div style={{ fontSize: 9, color: T.accentDim, letterSpacing: 3, marginBottom: 14 }}>▸ POSITION</div>
+              <div style={{ fontSize: 14, color: T.textBright, marginBottom: 12 }}>
+                <span style={{ color: T.accent }}>{PIECE_INFO[puzzle.attackerType].white} {PIECE_INFO[puzzle.attackerType].name}</span>
+                {" — find a fork square"}
+              </div>
+              <div style={{ fontSize: 13, color: T.text, lineHeight: 2 }}>
+                {puzzle.targets.map((t, i) => (
+                  <span key={i}>
+                    {i > 0 && <span style={{ color: T.textDim }}>,  </span>}
+                    <span style={{ color: T.red }}>♟ {sqName(t)}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Feedback */}
+            {feedback && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{
+                  background: feedback.correct ? T.greenDim : T.redDim,
+                  border: `1px solid ${feedback.correct ? "rgba(60,168,104,0.3)" : "rgba(196,74,60,0.3)"}`,
+                  borderRadius: 6, padding: "12px 16px",
+                  fontSize: 13, color: feedback.correct ? T.green : T.red,
+                  marginBottom: !feedback.correct ? 10 : 0,
+                }}>
+                  {feedback.message}
+                  {feedback.correct && puzzle.forks.length > 1 && (
+                    <span style={{ color: T.textDim, fontSize: 11 }}> ({puzzle.forks.length} solutions total)</span>
+                  )}
+                </div>
+
+                {/* Mini board on wrong answer */}
+                {!feedback.correct && (
+                  <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: "12px" }}>
+                    <div style={{ fontSize: 9, color: T.accentDim, letterSpacing: 3, marginBottom: 8 }}>▸ SOLUTION</div>
+                    {(() => {
+                      const targetSet = new Set(puzzle.targets.map(t => sqKey(t)));
+                      const forkSet   = new Set(puzzle.forks.map(f => sqKey(f)));
+                      // Alternate king/queen for black pieces
+                      const targetPieces = ['king', 'queen'];
+                      const targetArr = puzzle.targets.map((t, i) => ({ sq: t, type: targetPieces[i % 2] }));
+                      const targetPieceMap = new Map(targetArr.map(({ sq, type }) => [sqKey(sq), type]));
+                      const rows = [];
+                      for (let r = 7; r >= 0; r--) {
+                        const cells = [];
+                        for (let c = 0; c < 8; c++) {
+                          const light = (c + r) % 2 === 1;
+                          const k = sqKey([c, r]);
+                          const isTarget = targetSet.has(k);
+                          const isFork   = forkSet.has(k);
+                          let bg = light ? T.boardLight : T.boardDark;
+                          if (isFork)   bg = light ? '#8aad7a' : '#5a8a5a';
+                          if (isTarget) bg = light ? '#c47060' : '#8a4040';
+                          cells.push(
+                            <div key={k} style={{ position: "relative", width: "100%", paddingBottom: "100%" }}>
+                              <div style={{ position: "absolute", inset: 0, background: bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {isTarget && <ChessPiece type={targetPieceMap.get(k)} color="black" />}
+                                {isFork && !isTarget && <ChessPiece type={puzzle.attackerType} color="white" />}
+                              </div>
+                            </div>
+                          );
+                        }
+                        rows.push(
+                          <div key={r} style={{ display: "flex", alignItems: "center" }}>
+                            <span style={{ width: 14, textAlign: "center", fontSize: 9, color: T.textDim }}>{r+1}</span>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(8, 1fr)", flex: 1 }}>{cells}</div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div>
+                          {rows}
+                          <div style={{ display: "flex", marginLeft: 14 }}>
+                            {COLS.split("").map(l => <div key={l} style={{ flex: 1, textAlign: "center", fontSize: 9, color: T.textDim, paddingTop: 2 }}>{l}</div>)}
+                          </div>
+                          <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 10, color: T.textDim }}>
+                            <span><span style={{ display: "inline-block", width: 10, height: 10, background: "#c47060", borderRadius: 2, marginRight: 4, verticalAlign: "middle" }} />black pieces</span>
+                            <span><span style={{ display: "inline-block", width: 10, height: 10, background: "#8aad7a", borderRadius: 2, marginRight: 4, verticalAlign: "middle" }} />fork square{puzzle.forks.length > 1 ? "s" : ""}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                    <div style={{ textAlign: "center", marginTop: 14 }}>
+                      {mode === "score" && (
+                        <button onClick={() => { setPendingResults(null); nextQuestion(pendingResults); }} style={{
+                          padding: "9px 32px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                          background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 13,
+                          fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                        }}>NEXT →</button>
+                      )}
+                      {mode === "streak" && (
+                        <button onClick={() => setPhase(FORK_PHASES.RESULT)} style={{
+                          padding: "9px 32px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                          background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 13,
+                          fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                        }}>SEE RESULTS →</button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Input */}
+            {phase === FORK_PHASES.QUESTION && (
+              <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: "16px 20px" }}>
+                <div style={{ fontSize: 9, color: T.accentDim, letterSpacing: 3, marginBottom: 10 }}>▸ YOUR ANSWER</div>
+                <div style={{ fontSize: 11, color: T.textDim, marginBottom: 10 }}>
+                  Type the fork square (e.g. <span style={{ color: T.text }}>f4</span>)
+                </div>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <input ref={inputRef} value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="e.g. f4"
+                    style={{
+                      flex: 1, padding: "10px 14px", background: "rgba(0,0,0,0.3)",
+                      border: `1px solid ${T.panelBorder}`, borderRadius: 4,
+                      color: T.textBright, fontSize: 15, fontFamily: "inherit", letterSpacing: 1.5,
+                    }}
+                  />
+                  <button onClick={submit} style={{
+                    padding: "10px 20px", border: "none", borderRadius: 4,
+                    background: T.accent, color: T.bg, fontSize: 13,
+                    fontWeight: 600, fontFamily: "inherit", cursor: "pointer",
+                  }}>✓</button>
+                  <button onClick={() => {
+                    if (!puzzle || phase !== FORK_PHASES.QUESTION) return;
+                    const ms = Date.now() - questionStart;
+                    const correct = !puzzle.hasFork;
+                    const newResults = [...results, { correct, ms }];
+                    setResults(newResults);
+                    setFeedback({
+                      correct,
+                      message: correct ? "✓ Correct — no fork exists." : `✗ A fork existed! e.g. ${sqName(puzzle.forks[0])}`,
+                    });
+                    setPhase(FORK_PHASES.FEEDBACK);
+                    if (!correct && mode === "score") { setPendingResults(newResults); return; }
+                    if (!correct && mode === "streak") return;
+                    setTimeout(() => nextQuestion(newResults), 1200);
+                  }} style={{
+                    padding: "10px 14px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                    background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 12,
+                    fontFamily: "inherit", cursor: "pointer", whiteSpace: "nowrap", fontWeight: 600,
+                  }}>No fork</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* RESULT */}
+        {phase === FORK_PHASES.RESULT && (
+          <div style={{ animation: "fadeUp 0.3s ease" }}>
+            <div style={{
+              background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8,
+              padding: "32px 24px", marginBottom: 20, textAlign: "center",
+            }}>
+              {mode === "score" ? (
+                <>
+                  <div style={{ fontSize: 11, color: T.accentDim, letterSpacing: 3, marginBottom: 16 }}>▸ SCORE</div>
+                  <div style={{ fontSize: 48, fontWeight: 700, color: correct === FORK_TOTAL ? T.green : T.accent, marginBottom: 4 }}>
+                    {correct} / {FORK_TOTAL}
+                  </div>
+                  <div style={{ fontSize: 13, color: T.text, marginBottom: 20 }}>
+                    {correct === FORK_TOTAL ? "✓ Perfect!" : `${correct} correct answer${correct !== 1 ? "s" : ""}`}
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center", gap: 32 }}>
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(avgMs / 1000).toFixed(2)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>AVG TIME</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(results.reduce((s, r) => s + r.ms, 0) / 1000).toFixed(1)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>TOTAL TIME</div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 11, color: T.accentDim, letterSpacing: 3, marginBottom: 16 }}>▸ STREAK</div>
+                  <div style={{ fontSize: 64, fontWeight: 700, color: T.accent, marginBottom: 4 }}>{streak}</div>
+                  <div style={{ fontSize: 13, color: T.text, marginBottom: 20 }}>
+                    {streak === 0 ? "First answer was wrong!" : `${streak} correct answer${streak !== 1 ? "s" : ""} in a row`}
+                  </div>
+                  {streak > 0 && (
+                    <div>
+                      <div style={{ fontSize: 22, fontWeight: 600, color: T.textBright }}>{(avgMs / 1000).toFixed(2)}s</div>
+                      <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 1, marginTop: 4 }}>AVG TIME PER ANSWER</div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <button onClick={startGame} style={{
+                padding: "10px 40px", border: `1px solid ${T.accent}`, borderRadius: 4,
+                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14,
+                fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
+                animation: "glowPulse 2s infinite",
+              }}>PLAY AGAIN</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
 // ── Root ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1670,5 +2110,6 @@ export default function App() {
   if (screen === "minefield")   return <MinefieldGame    onHome={() => setScreen("home")} />;
   if (screen === "sniper")      return <SniperGame       onHome={() => setScreen("home")} />;
   if (screen === "coordinates") return <CoordinatesGame  onHome={() => setScreen("home")} />;
+  if (screen === "fork")        return <ForkGame         onHome={() => setScreen("home")} />;
   return <HomeScreen onSelect={setScreen} />;
 }
