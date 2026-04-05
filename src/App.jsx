@@ -284,6 +284,7 @@ function chipStyle(val, current) {
 // ── Shared Shell ──────────────────────────────────────────────────────────────
 
 function AppShell({ title, subtitle, onHome, headerRight, children }) {
+  React.useContext(ThemeContext); // subscribe to theme changes → forces re-render
   return (
     <div style={{
       background: T.bg, minHeight: "100vh", color: T.text,
@@ -390,7 +391,8 @@ const GAMES = [
   },
 ];
 
-function HomeScreen({ onSelect }) {
+function HomeScreen({ onSelect, dark: _dark }) {
+  React.useContext(ThemeContext); // subscribe to theme changes → forces re-render
   return (
     <div style={{
       background: T.bg, minHeight: "100vh", color: T.text,
@@ -602,7 +604,7 @@ function RevealBoard({ puzzle, userPath, isCorrect }) {
 
 const MPHASES = { BRIEFING: 0, INPUT: 1, RESULT: 2 };
 
-function MinefieldGame({ onHome }) {
+function MinefieldGame({ onHome, dark: _dark }) {
   const [config, setConfig] = useState({ navigator: "knight", difficulty: "medium" });
   const [puzzle, setPuzzle] = useState(null);
   const [phase, setPhase] = useState(MPHASES.BRIEFING);
@@ -1265,7 +1267,7 @@ function SniperBoard({ board, finalBoard, trackedFrom, trackedPos, selectedBlack
   );
 }
 
-function SniperGame({ onHome }) {
+function SniperGame({ onHome, dark: _dark }) {
   const [numMoves, setNumMoves] = useState(6);
   const [customInput, setCustomInput] = useState(null);
   const [puzzle, setPuzzle] = useState(null);
@@ -1465,7 +1467,7 @@ function randomSquare() {
 
 const COORD_MODES = { IDLE: 0, PLAYING: 1, RESULT: 2 };
 
-function CoordinatesGame({ onHome }) {
+function CoordinatesGame({ onHome, dark: _dark }) {
   const [mode, setMode] = useState("score"); // "score" | "streak"
   const [phase, setPhase] = useState(COORD_MODES.IDLE);
   const [square, setSquare] = useState(null);
@@ -1763,7 +1765,7 @@ function generateForkPuzzle() {
 const FORK_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2, RESULT: 3 };
 const FORK_TOTAL = 5;
 
-function ForkGame({ onHome }) {
+function ForkGame({ onHome, dark: _dark }) {
   const [mode, setMode] = useState("score");
   const [phase, setPhase] = useState(FORK_PHASES.IDLE);
   const [puzzle, setPuzzle] = useState(null);
@@ -2261,7 +2263,7 @@ async function fetchMate1Puzzle(difficulty) {
 
 const MATE_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2 };
 
-function MateGame({ onHome }) {
+function MateGame({ onHome, dark: _dark }) {
   const [difficulty, setDifficulty] = useState('easy');
   const [phase, setPhase] = useState(MATE_PHASES.IDLE);
   const [puzzle, setPuzzle] = useState(null);
@@ -2514,12 +2516,12 @@ export default function App() {
   function toggle() { setDark(d => !d); }
 
   let child;
-  if (screen === "minefield")   child = <MinefieldGame    onHome={() => setScreen("home")} />;
-  else if (screen === "sniper")      child = <SniperGame       onHome={() => setScreen("home")} />;
-  else if (screen === "coordinates") child = <CoordinatesGame  onHome={() => setScreen("home")} />;
-  else if (screen === "fork")        child = <ForkGame         onHome={() => setScreen("home")} />;
-  else if (screen === "mate1")       child = <MateGame         onHome={() => setScreen("home")} />;
-  else                               child = <HomeScreen        onSelect={setScreen} />;
+  if (screen === "minefield")   child = <MinefieldGame    onHome={() => setScreen("home")} dark={dark} />;
+  else if (screen === "sniper")      child = <SniperGame       onHome={() => setScreen("home")} dark={dark} />;
+  else if (screen === "coordinates") child = <CoordinatesGame  onHome={() => setScreen("home")} dark={dark} />;
+  else if (screen === "fork")        child = <ForkGame         onHome={() => setScreen("home")} dark={dark} />;
+  else if (screen === "mate1")       child = <MateGame         onHome={() => setScreen("home")} dark={dark} />;
+  else                               child = <HomeScreen        onSelect={setScreen} dark={dark} />;
 
   return (
     <ThemeContext.Provider value={{ dark, toggle }}>
