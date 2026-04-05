@@ -14,11 +14,14 @@ Navigate your piece from its starting square to a target in the fewest moves —
 ### 🎯 Blindfold Sniper — Medium
 A real chess position is shown, with one white piece highlighted. A random sequence of moves is then announced in algebraic notation — no visual updates. Follow the game in your head and identify which black pieces your tracked piece can capture at the end of the sequence.
 
-### 🗺️ Blindfold Coordinates — Easy
-A square is named — answer whether it's light or dark as fast as you can. Two modes: **Score** (10 questions, tracks accuracy and average response time) and **Streak** (keep going until your first mistake).
+### ♛ Blindfold Mate in One — Medium
+A position from a real Lichess puzzle is described in text — no board shown. Find any move that delivers checkmate in one. All valid mating moves are accepted. Three difficulty levels based on the number of pieces on the board (Easy: ≤5, Medium: 6–10, Hard: 11–15).
 
 ### ⚔️ Blindfold Fork Finder — Easy
 A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. Score mode (5 puzzles) or Streak. An explanatory board is revealed on wrong answers.
+
+### 🗺️ Blindfold Coordinates — Easy
+A square is named — answer whether it's light or dark as fast as you can. Two modes: **Score** (10 questions, tracks accuracy and average response time) and **Streak** (keep going until your first mistake).
 
 *More games coming.*
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 // ── Chess Engine ─────────────────────────────────────────────────────────────
 
@@ -219,7 +219,7 @@ function pieceMoves(type, sq, occupied = new Set()) {
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 
-const T = {
+const DARK_THEME = {
   bg: "#0b0e0f",
   panel: "#0f1314",
   panelBorder: "#1a2224",
@@ -237,18 +237,40 @@ const T = {
   scanline: "rgba(60, 168, 104, 0.03)",
 };
 
-const GLOBAL_STYLE = `
+const LIGHT_THEME = {
+  bg: "#f4f1eb",
+  panel: "#fffdf7",
+  panelBorder: "#d8cdb4",
+  text: "#4a4030",
+  textBright: "#1a1208",
+  textDim: "#9a8e78",
+  accent: "#a07820",
+  accentDim: "#c8a860",
+  green: "#2a8850",
+  greenDim: "#d0f0de",
+  red: "#a83028",
+  redDim: "#f5ddd8",
+  boardLight: "#f0d9b5",
+  boardDark: "#b58863",
+  scanline: "rgba(160, 120, 32, 0.03)",
+};
+
+let T = DARK_THEME;
+
+function makeGlobalStyle(theme) {
+  return `
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: ${T.bg}; }
+  body { background: ${theme.bg}; }
   @keyframes boardReveal { from { opacity: 0; transform: scale(0.96); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 rgba(196,154,60,0); } 50% { box-shadow: 0 0 18px rgba(196,154,60,0.12); } }
-  button:hover { filter: brightness(1.15); }
-  input:focus { outline: none; border-color: ${T.accent} !important; }
+  button:hover { filter: brightness(1.1); }
+  input:focus { outline: none; border-color: ${theme.accent} !important; }
   input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
-`;
+`;}
+const GLOBAL_STYLE = makeGlobalStyle(T);
 
 function chipStyle(val, current) {
   return {
@@ -269,15 +291,18 @@ function AppShell({ title, subtitle, onHome, headerRight, children }) {
       display: "flex", flexDirection: "column", alignItems: "center",
       backgroundImage: `repeating-linear-gradient(0deg, ${T.scanline} 0px, ${T.scanline} 1px, transparent 1px, transparent 3px)`,
     }}>
-      <style>{GLOBAL_STYLE}</style>
-      <div style={{ width: "100%", maxWidth: 540, padding: "28px 20px 0" }}>
+      <style>{makeGlobalStyle(T)}</style>
+      <div style={{ width: "100%", maxWidth: 600, padding: "28px 20px 0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div onClick={onHome} style={{ cursor: "pointer" }}>
             <div style={{ fontSize: 10, color: T.accentDim, letterSpacing: 2, marginBottom: 4 }}>← BLINDFOLD SUITE</div>
             <h1 style={{ fontSize: 20, fontWeight: 600, color: T.textBright, letterSpacing: 2 }}>{title}</h1>
             <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 4, marginTop: 2 }}>{subtitle}</div>
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>{headerRight}</div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            {headerRight}
+            <ThemeToggleBtn />
+          </div>
         </div>
         <div style={{ height: 1, background: `linear-gradient(90deg, ${T.accent}50, transparent 70%)`, margin: "12px 0 16px" }} />
       </div>
@@ -332,20 +357,28 @@ const GAMES = [
     difficulty: "Hard",
   },
   {
-    id: "mate1",
-    title: "Blindfold Mate in One",
-    icon: "♛",
-    tagline: "Find the killing blow",
-    description: "A position is described in text — no board shown. Find the move that delivers checkmate in one. All valid mating moves are accepted. Choose your difficulty by number of pieces on the board.",
-    difficulty: "Hard",
-  },
-  {
     id: "sniper",
     title: "Blindfold Sniper",
     icon: "🎯",
     tagline: "Who's in your crosshairs?",
     description: "A position is given with a white piece to track. A random sequence of moves is generated in algebraic notation — no visual updates. Follow the moves in your head and click the black pieces your piece can capture at the end of the sequence.",
     difficulty: "Medium",
+  },
+  {
+    id: "mate1",
+    title: "Blindfold Mate in One",
+    icon: "♛",
+    tagline: "Find the killing blow",
+    description: "A position is described in text — no board shown. Find the move that delivers checkmate in one. All valid mating moves are accepted. Choose your difficulty by number of pieces on the board.",
+    difficulty: "Medium",
+  },
+  {
+    id: "fork",
+    title: "Blindfold Fork Finder",
+    icon: "⚔️",
+    tagline: "Two for the price of one",
+    description: "A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. No board. Pure calculation.",
+    difficulty: "Easy",
   },
   {
     id: "coordinates",
@@ -355,14 +388,6 @@ const GAMES = [
     description: "A square is named — say whether it's light or dark as fast as you can. Score mode: 10 questions, track your accuracy and average time. Streak mode: how far can you go before your first mistake?",
     difficulty: "Easy",
   },
-  {
-    id: "fork",
-    title: "Blindfold Fork Finder",
-    icon: "⚔️",
-    tagline: "Two for the price of one",
-    description: "A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. No board. Pure calculation.",
-    difficulty: "Easy",
-  }
 ];
 
 function HomeScreen({ onSelect }) {
@@ -373,27 +398,32 @@ function HomeScreen({ onSelect }) {
       display: "flex", flexDirection: "column", alignItems: "center",
       backgroundImage: `repeating-linear-gradient(0deg, ${T.scanline} 0px, ${T.scanline} 1px, transparent 1px, transparent 3px)`,
     }}>
-      <style>{GLOBAL_STYLE}</style>
-      <div style={{ width: "100%", maxWidth: 540, padding: "48px 20px 0" }}>
-        <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD</h1>
-        <div style={{ fontSize: 11, color: T.textDim, letterSpacing: 4, marginTop: 4 }}>CHESS TRAINING SUITE</div>
+      <style>{makeGlobalStyle(T)}</style>
+      <div style={{ width: "100%", maxWidth: 700, padding: "48px 20px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD</h1>
+            <div style={{ fontSize: 11, color: T.textDim, letterSpacing: 4, marginTop: 4 }}>CHESS TRAINING SUITE</div>
+          </div>
+          <ThemeToggleBtn />
+        </div>
         <div style={{ height: 1, background: `linear-gradient(90deg, ${T.accent}50, transparent 70%)`, margin: "20px 0 32px" }} />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
           {GAMES.map(game => (
             <div key={game.id} onClick={() => onSelect(game.id)}
-              style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8, padding: "18px 16px", cursor: "pointer", transition: "border-color 0.2s", display: "flex", flexDirection: "column" }}
+              style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 8, padding: "16px 14px", cursor: "pointer", transition: "border-color 0.2s", display: "flex", flexDirection: "column" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = T.accent}
               onMouseLeave={e => e.currentTarget.style.borderColor = T.panelBorder}
             >
-              <div style={{ fontSize: 28, lineHeight: 1, marginBottom: 10 }}>{game.icon}</div>
+              <div style={{ fontSize: 24, lineHeight: 1, marginBottom: 8 }}>{game.icon}</div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: T.textBright, letterSpacing: 0.5 }}>{game.title}</div>
-                <div style={{ fontSize: 10, color: game.difficulty === "Hard" ? T.red : game.difficulty === "Medium" ? T.accent : T.green, flexShrink: 0, marginLeft: 6, fontWeight: 600 }}>{game.difficulty}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: T.textBright, letterSpacing: 0.5 }}>{game.title}</div>
+                <div style={{ fontSize: 9, color: game.difficulty === "Hard" ? T.red : game.difficulty === "Medium" ? T.accent : T.green, flexShrink: 0, marginLeft: 4, fontWeight: 600 }}>{game.difficulty}</div>
               </div>
-              <div style={{ fontSize: 9, color: T.accent, letterSpacing: 2, marginBottom: 8 }}>{game.tagline.toUpperCase()}</div>
-              <div style={{ fontSize: 11, color: T.text, lineHeight: 1.6, flex: 1 }}>{game.description}</div>
-              <div style={{ marginTop: 14, textAlign: "right" }}>
-                <span style={{ fontSize: 10, color: T.accent, border: `1px solid ${T.accentDim}`, borderRadius: 4, padding: "3px 10px", letterSpacing: 1 }}>PLAY →</span>
+              <div style={{ fontSize: 8, color: T.accent, letterSpacing: 2, marginBottom: 7 }}>{game.tagline.toUpperCase()}</div>
+              <div style={{ fontSize: 10, color: T.text, lineHeight: 1.6, flex: 1 }}>{game.description}</div>
+              <div style={{ marginTop: 12, textAlign: "right" }}>
+                <span style={{ fontSize: 9, color: T.accent, border: `1px solid ${T.accentDim}`, borderRadius: 4, padding: "3px 8px", letterSpacing: 1 }}>PLAY →</span>
               </div>
             </div>
           ))}
@@ -1908,12 +1938,16 @@ function ForkGame({ onHome }) {
                 {" — find a fork square"}
               </div>
               <div style={{ fontSize: 13, color: T.text, lineHeight: 2 }}>
-                {puzzle.targets.map((t, i) => (
-                  <span key={i}>
-                    {i > 0 && <span style={{ color: T.textDim }}>,  </span>}
-                    <span style={{ color: T.red }}>♟ {sqName(t)}</span>
-                  </span>
-                ))}
+                {puzzle.targets.map((t, i) => {
+                  const pieceName = i === 0 ? "King" : "Queen";
+                  const pieceSymbol = i === 0 ? "♚" : "♛";
+                  return (
+                    <span key={i}>
+                      {i > 0 && <span style={{ color: T.textDim }}>,  </span>}
+                      <span style={{ color: T.red }}>{pieceSymbol} {pieceName} {sqName(t)}</span>
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -2341,17 +2375,23 @@ function MateGame({ onHome }) {
 
             {/* Position */}
             <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: "20px 24px", marginBottom: 14, animation: "fadeUp 0.3s ease" }}>
-              <div style={{ fontSize: 9, color: T.accentDim, letterSpacing: 3, marginBottom: 14 }}>
-                ▸ POSITION — {puzzle.attackingColor.toUpperCase()} TO MOVE
+              <div style={{
+                fontSize: 13, fontWeight: 600, letterSpacing: 2,
+                color: puzzle.attackingColor === 'white' ? T.textBright : T.text,
+                background: T.panelBorder,
+                border: `1px solid ${T.panelBorder}`,
+                borderRadius: 4, padding: "6px 12px", display: "inline-block", marginBottom: 14,
+              }}>
+                {puzzle.attackingColor === 'white' ? '♔ WHITE TO MOVE' : '♚ BLACK TO MOVE'}
               </div>
               <div style={{ marginBottom: 10 }}>
                 <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginBottom: 6 }}>WHITE</div>
-                <div style={{ fontSize: 13, color: "#f0f0f0", lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.text.white}</div>
+                <div style={{ fontSize: 13, color: T.textBright, lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.text.white}</div>
               </div>
               <div style={{ height: 1, background: T.panelBorder, margin: "12px 0" }} />
               <div>
                 <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginBottom: 6 }}>BLACK</div>
-                <div style={{ fontSize: 13, color: "#c8c8c8", lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.text.black}</div>
+                <div style={{ fontSize: 13, color: T.text, lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.text.black}</div>
               </div>
             </div>
 
@@ -2372,10 +2412,18 @@ function MateGame({ onHome }) {
                     </div>
                   )}
                   {puzzle.lichessId && (
-                    <a href={`https://lichess.org/training/${puzzle.lichessId}`} target="_blank" rel="noreferrer"
-                      style={{ display: "inline-block", marginTop: 8, fontSize: 11, color: T.textDim, textDecoration: "none", opacity: 0.8 }}>
-                      View on Lichess ↗
-                    </a>
+                    <div style={{ marginTop: 12 }}>
+                      <a href={`https://lichess.org/training/${puzzle.lichessId}`} target="_blank" rel="noreferrer"
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          fontSize: 12, color: T.accent,
+                          textDecoration: "none", border: `1px solid ${T.accentDim}`,
+                          borderRadius: 4, padding: "4px 10px", fontFamily: "inherit",
+                          letterSpacing: 0.5,
+                        }}>
+                        View on Lichess ↗
+                      </a>
+                    </div>
                   )}
                 </div>
                 {!feedback.correct && (
@@ -2436,12 +2484,46 @@ function normalize(s) { return s.replace(/\s/g,'').replace(/[+#!=?]/g,'').toLowe
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 
+// ── Root ──────────────────────────────────────────────────────────────────────
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+
+const ThemeContext = React.createContext({ dark: true, toggle: () => {} });
+
+function ThemeToggleBtn() {
+  const { dark, toggle } = React.useContext(ThemeContext);
+  return (
+    <button
+      onClick={toggle}
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      style={{
+        background: "transparent", border: `1px solid ${T.panelBorder}`, borderRadius: 4,
+        color: T.textDim, fontSize: 16, cursor: "pointer", padding: "5px 9px",
+        fontFamily: "inherit", lineHeight: 1, flexShrink: 0,
+      }}
+    >{dark ? "☀" : "☾"}</button>
+  );
+}
+
 export default function App() {
+  const [dark, setDark] = useState(true);
   const [screen, setScreen] = useState("home");
-  if (screen === "minefield")   return <MinefieldGame    onHome={() => setScreen("home")} />;
-  if (screen === "sniper")      return <SniperGame       onHome={() => setScreen("home")} />;
-  if (screen === "coordinates") return <CoordinatesGame  onHome={() => setScreen("home")} />;
-  if (screen === "fork")        return <ForkGame         onHome={() => setScreen("home")} />;
-  if (screen === "mate1")       return <MateGame         onHome={() => setScreen("home")} />;
-  return <HomeScreen onSelect={setScreen} />;
+
+  Object.assign(T, dark ? DARK_THEME : LIGHT_THEME);
+
+  function toggle() { setDark(d => !d); }
+
+  let child;
+  if (screen === "minefield")   child = <MinefieldGame    onHome={() => setScreen("home")} />;
+  else if (screen === "sniper")      child = <SniperGame       onHome={() => setScreen("home")} />;
+  else if (screen === "coordinates") child = <CoordinatesGame  onHome={() => setScreen("home")} />;
+  else if (screen === "fork")        child = <ForkGame         onHome={() => setScreen("home")} />;
+  else if (screen === "mate1")       child = <MateGame         onHome={() => setScreen("home")} />;
+  else                               child = <HomeScreen        onSelect={setScreen} />;
+
+  return (
+    <ThemeContext.Provider value={{ dark, toggle }}>
+      {child}
+    </ThemeContext.Provider>
+  );
 }
