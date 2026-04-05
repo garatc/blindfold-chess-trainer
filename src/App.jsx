@@ -376,6 +376,45 @@ function HomeScreen({ onSelect, themeBtn }) {
             </div>
           ))}
         </div>
+
+        {/* Footer */}
+        <div style={{
+          marginTop: 48, paddingBottom: 32,
+          fontSize: 10, color: T.textDim, lineHeight: 2, letterSpacing: 0.5,
+          borderTop: `1px solid ${T.panelBorder}`, paddingTop: 20,
+        }}>
+          <div>
+            © <a href="https://github.com/garatc" target="_blank" rel="noreferrer"
+              style={{ color: T.textDim, textDecoration: "none", borderBottom: `1px solid ${T.panelBorder}` }}>
+              garatc
+            </a>
+            {" · "}
+            Puzzles from{" "}
+            <a href="https://lichess.org" target="_blank" rel="noreferrer"
+              style={{ color: T.textDim, textDecoration: "none", borderBottom: `1px solid ${T.panelBorder}` }}>
+              Lichess
+            </a>
+            {" "}(<a href="https://database.lichess.org" target="_blank" rel="noreferrer"
+              style={{ color: T.textDim, textDecoration: "none", borderBottom: `1px solid ${T.panelBorder}` }}>
+              CC BY-NC-SA 4.0
+            </a>)
+          </div>
+          <div>
+            Chess pieces by{" "}
+            <a href="https://en.wikipedia.org/wiki/User:Cburnett" target="_blank" rel="noreferrer"
+              style={{ color: T.textDim, textDecoration: "none", borderBottom: `1px solid ${T.panelBorder}` }}>
+              cburnett
+            </a>
+            {" "}(CC BY-SA 3.0)
+            {" · "}
+            Font{" "}
+            <a href="https://fonts.google.com/specimen/IBM+Plex+Mono" target="_blank" rel="noreferrer"
+              style={{ color: T.textDim, textDecoration: "none", borderBottom: `1px solid ${T.panelBorder}` }}>
+              IBM Plex Mono
+            </a>
+            {" "}(SIL Open Font License)
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1479,9 +1518,9 @@ function CoordinatesGame({ onHome, themeBtn }) {
   const avgMs = results.length ? Math.round(results.reduce((s, r) => s + r.ms, 0) / results.length) : 0;
   const streak = results.length; // in streak mode, all results up to first wrong = streak
 
-  const bgColor = feedback === "correct" ? "rgba(60,168,104,0.15)"
-                : feedback === "wrong"   ? "rgba(196,74,60,0.15)"
-                : "transparent";
+  const bgColor = feedback === "correct" ? T.greenDim
+                : feedback === "wrong"   ? T.redDim
+                : T.panel;
 
   return (
     <AppShell title="COORDINATES" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
@@ -1546,10 +1585,10 @@ function CoordinatesGame({ onHome, themeBtn }) {
 
             {/* Square display */}
             <div style={{
-              background: T.panel, border: `1px solid ${feedback === "correct" ? T.green : feedback === "wrong" ? T.red : T.panelBorder}`,
+              border: `1px solid ${feedback === "correct" ? T.green : feedback === "wrong" ? T.red : T.panelBorder}`,
               borderRadius: 8, padding: "40px 20px", marginBottom: 24,
               textAlign: "center", transition: "border-color 0.15s, background 0.15s",
-              background: bgColor || T.panel,
+              background: bgColor,
             }}>
               {feedback === null && (
                 <div style={{ fontSize: 56, fontWeight: 700, color: T.textBright, letterSpacing: 4 }}>{square}</div>
@@ -1570,8 +1609,8 @@ function CoordinatesGame({ onHome, themeBtn }) {
             {/* Buttons */}
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => answer(true)} disabled={feedback !== null} style={{
-                flex: 1, padding: "18px", border: `1px solid ${T.panelBorder}`, borderRadius: 6,
-                background: "rgba(240,217,181,0.08)", color: "#f0d9b5", fontSize: 15,
+                flex: 1, padding: "18px", border: `1px solid ${T.boardLight}`, borderRadius: 6,
+                background: "var(--btn-light-bg, rgba(240,217,181,0.15))", color: T.textBright, fontSize: 15,
                 fontFamily: "inherit", cursor: feedback !== null ? "default" : "pointer",
                 fontWeight: 600, letterSpacing: 1, opacity: feedback !== null ? 0.5 : 1,
                 transition: "opacity 0.15s",
@@ -1579,8 +1618,8 @@ function CoordinatesGame({ onHome, themeBtn }) {
                 ☀️ LIGHT
               </button>
               <button onClick={() => answer(false)} disabled={feedback !== null} style={{
-                flex: 1, padding: "18px", border: `1px solid ${T.panelBorder}`, borderRadius: 6,
-                background: "rgba(100,60,30,0.25)", color: "#b58863", fontSize: 15,
+                flex: 1, padding: "18px", border: `1px solid ${T.boardDark}`, borderRadius: 6,
+                background: "var(--btn-dark-bg, rgba(100,60,30,0.18))", color: T.textBright, fontSize: 15,
                 fontFamily: "inherit", cursor: feedback !== null ? "default" : "pointer",
                 fontWeight: 600, letterSpacing: 1, opacity: feedback !== null ? 0.5 : 1,
                 transition: "opacity 0.15s",
