@@ -219,58 +219,6 @@ function pieceMoves(type, sq, occupied = new Set()) {
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 
-const DARK_THEME = {
-  bg: "#0b0e0f",
-  panel: "#0f1314",
-  panelBorder: "#1a2224",
-  text: "#8a9a9e",
-  textBright: "#d0dce0",
-  textDim: "#4a5a5e",
-  accent: "#c49a3c",
-  accentDim: "#7a6228",
-  green: "#3ca868",
-  greenDim: "#1a3a28",
-  red: "#c44a3c",
-  redDim: "#2a1614",
-  boardLight: "#f0d9b5",
-  boardDark: "#b58863",
-  scanline: "rgba(60, 168, 104, 0.03)",
-};
-
-const LIGHT_THEME = {
-  bg: "#f4f1eb",
-  panel: "#fffdf7",
-  panelBorder: "#d8cdb4",
-  text: "#4a4030",
-  textBright: "#1a1208",
-  textDim: "#9a8e78",
-  accent: "#a07820",
-  accentDim: "#c8a860",
-  green: "#2a8850",
-  greenDim: "#d0f0de",
-  red: "#a83028",
-  redDim: "#f5ddd8",
-  boardLight: "#f0d9b5",
-  boardDark: "#b58863",
-  scanline: "rgba(160, 120, 32, 0.03)",
-};
-
-let T = DARK_THEME;
-
-function makeGlobalStyle(theme) {
-  return `
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: ${theme.bg}; }
-  @keyframes boardReveal { from { opacity: 0; transform: scale(0.96); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 rgba(196,154,60,0); } 50% { box-shadow: 0 0 18px rgba(196,154,60,0.12); } }
-  button:hover { filter: brightness(1.1); }
-  input:focus { outline: none; border-color: ${theme.accent} !important; }
-  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type=number] { -moz-appearance: textfield; }
-`;}
-const GLOBAL_STYLE = makeGlobalStyle(T);
 
 function chipStyle(val, current) {
   return {
@@ -283,8 +231,7 @@ function chipStyle(val, current) {
 
 // ── Shared Shell ──────────────────────────────────────────────────────────────
 
-function AppShell({ title, subtitle, onHome, headerRight, children }) {
-  React.useContext(ThemeContext); // subscribe to theme changes → forces re-render
+function AppShell({ title, subtitle, onHome, headerRight, children, themeBtn }) {
   return (
     <div style={{
       background: T.bg, minHeight: "100vh", color: T.text,
@@ -292,7 +239,7 @@ function AppShell({ title, subtitle, onHome, headerRight, children }) {
       display: "flex", flexDirection: "column", alignItems: "center",
       backgroundImage: `repeating-linear-gradient(0deg, ${T.scanline} 0px, ${T.scanline} 1px, transparent 1px, transparent 3px)`,
     }}>
-      <style>{makeGlobalStyle(T)}</style>
+      <style>{BASE_STYLE}</style>
       <div style={{ width: "100%", maxWidth: 600, padding: "28px 20px 0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div onClick={onHome} style={{ cursor: "pointer" }}>
@@ -302,7 +249,7 @@ function AppShell({ title, subtitle, onHome, headerRight, children }) {
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             {headerRight}
-            <ThemeToggleBtn />
+            {themeBtn}
           </div>
         </div>
         <div style={{ height: 1, background: `linear-gradient(90deg, ${T.accent}50, transparent 70%)`, margin: "12px 0 16px" }} />
@@ -391,8 +338,7 @@ const GAMES = [
   },
 ];
 
-function HomeScreen({ onSelect, dark: _dark }) {
-  React.useContext(ThemeContext); // subscribe to theme changes → forces re-render
+function HomeScreen({ onSelect, themeBtn }) {
   return (
     <div style={{
       background: T.bg, minHeight: "100vh", color: T.text,
@@ -400,14 +346,14 @@ function HomeScreen({ onSelect, dark: _dark }) {
       display: "flex", flexDirection: "column", alignItems: "center",
       backgroundImage: `repeating-linear-gradient(0deg, ${T.scanline} 0px, ${T.scanline} 1px, transparent 1px, transparent 3px)`,
     }}>
-      <style>{makeGlobalStyle(T)}</style>
+      <style>{BASE_STYLE}</style>
       <div style={{ width: "100%", maxWidth: 700, padding: "48px 20px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD</h1>
             <div style={{ fontSize: 11, color: T.textDim, letterSpacing: 4, marginTop: 4 }}>CHESS TRAINING SUITE</div>
           </div>
-          <ThemeToggleBtn />
+          {themeBtn}
         </div>
         <div style={{ height: 1, background: `linear-gradient(90deg, ${T.accent}50, transparent 70%)`, margin: "20px 0 32px" }} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
@@ -604,7 +550,7 @@ function RevealBoard({ puzzle, userPath, isCorrect }) {
 
 const MPHASES = { BRIEFING: 0, INPUT: 1, RESULT: 2 };
 
-function MinefieldGame({ onHome, dark: _dark }) {
+function MinefieldGame({ onHome, themeBtn }) {
   const [config, setConfig] = useState({ navigator: "knight", difficulty: "medium" });
   const [puzzle, setPuzzle] = useState(null);
   const [phase, setPhase] = useState(MPHASES.BRIEFING);
@@ -677,7 +623,7 @@ function MinefieldGame({ onHome, dark: _dark }) {
   if (!puzzle) return null;
 
   return (
-    <AppShell title="BLINDFOLD MINEFIELD" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+    <AppShell title="BLINDFOLD MINEFIELD" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
@@ -1267,7 +1213,7 @@ function SniperBoard({ board, finalBoard, trackedFrom, trackedPos, selectedBlack
   );
 }
 
-function SniperGame({ onHome, dark: _dark }) {
+function SniperGame({ onHome, themeBtn }) {
   const [numMoves, setNumMoves] = useState(6);
   const [customInput, setCustomInput] = useState(null);
   const [puzzle, setPuzzle] = useState(null);
@@ -1296,7 +1242,7 @@ function SniperGame({ onHome, dark: _dark }) {
   };
 
   if (loading) return (
-    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}>
+    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn} headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}>
       <div style={{ width: "100%", maxWidth: 540, padding: "40px 20px", textAlign: "center", color: T.textDim, fontSize: 13 }}>Generating puzzle...</div>
     </AppShell>
   );
@@ -1314,7 +1260,7 @@ function SniperGame({ onHome, dark: _dark }) {
   }
 
   return (
-    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
@@ -1467,7 +1413,7 @@ function randomSquare() {
 
 const COORD_MODES = { IDLE: 0, PLAYING: 1, RESULT: 2 };
 
-function CoordinatesGame({ onHome, dark: _dark }) {
+function CoordinatesGame({ onHome, themeBtn }) {
   const [mode, setMode] = useState("score"); // "score" | "streak"
   const [phase, setPhase] = useState(COORD_MODES.IDLE);
   const [square, setSquare] = useState(null);
@@ -1538,7 +1484,7 @@ function CoordinatesGame({ onHome, dark: _dark }) {
                 : "transparent";
 
   return (
-    <AppShell title="COORDINATES" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+    <AppShell title="COORDINATES" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
@@ -1765,7 +1711,7 @@ function generateForkPuzzle() {
 const FORK_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2, RESULT: 3 };
 const FORK_TOTAL = 5;
 
-function ForkGame({ onHome, dark: _dark }) {
+function ForkGame({ onHome, themeBtn }) {
   const [mode, setMode] = useState("score");
   const [phase, setPhase] = useState(FORK_PHASES.IDLE);
   const [puzzle, setPuzzle] = useState(null);
@@ -1870,7 +1816,7 @@ function ForkGame({ onHome, dark: _dark }) {
   // When streak ends — let user read feedback before showing result
 
   return (
-    <AppShell title="FORK FINDER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+    <AppShell title="FORK FINDER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
@@ -2263,7 +2209,7 @@ async function fetchMate1Puzzle(difficulty) {
 
 const MATE_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2 };
 
-function MateGame({ onHome, dark: _dark }) {
+function MateGame({ onHome, themeBtn }) {
   const [difficulty, setDifficulty] = useState('easy');
   const [phase, setPhase] = useState(MATE_PHASES.IDLE);
   const [puzzle, setPuzzle] = useState(null);
@@ -2325,7 +2271,7 @@ function MateGame({ onHome, dark: _dark }) {
   const total   = results.length;
 
   return (
-    <AppShell title="MATE IN ONE" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome}
+    <AppShell title="MATE IN ONE" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
@@ -2486,46 +2432,86 @@ function normalize(s) { return s.replace(/\s/g,'').replace(/[+#!=?]/g,'').toLowe
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 
-// ── Root ──────────────────────────────────────────────────────────────────────
-
 // ── Theme ─────────────────────────────────────────────────────────────────────
 
-const ThemeContext = React.createContext({ dark: true, toggle: () => {} });
+// T always points to CSS variable references — actual values set via :root vars
+const T = {
+  bg:          "var(--bg)",
+  panel:       "var(--panel)",
+  panelBorder: "var(--panelBorder)",
+  text:        "var(--text)",
+  textBright:  "var(--textBright)",
+  textDim:     "var(--textDim)",
+  accent:      "var(--accent)",
+  accentDim:   "var(--accentDim)",
+  green:       "var(--green)",
+  greenDim:    "var(--greenDim)",
+  red:         "var(--red)",
+  redDim:      "var(--redDim)",
+  boardLight:  "#f0d9b5",
+  boardDark:   "#b58863",
+  scanline:    "var(--scanline)",
+};
 
-function ThemeToggleBtn() {
-  const { dark, toggle } = React.useContext(ThemeContext);
-  return (
-    <button
-      onClick={toggle}
-      title={dark ? "Switch to light mode" : "Switch to dark mode"}
-      style={{
-        background: "transparent", border: `1px solid ${T.panelBorder}`, borderRadius: 4,
-        color: T.textDim, fontSize: 16, cursor: "pointer", padding: "5px 9px",
-        fontFamily: "inherit", lineHeight: 1, flexShrink: 0,
-      }}
-    >{dark ? "☀" : "☾"}</button>
-  );
+const DARK_VARS = `
+  --bg: #0b0e0f; --panel: #0f1314; --panelBorder: #1a2224;
+  --text: #8a9a9e; --textBright: #d0dce0; --textDim: #4a5a5e;
+  --accent: #c49a3c; --accentDim: #7a6228;
+  --green: #3ca868; --greenDim: #1a3a28;
+  --red: #c44a3c; --redDim: #2a1614;
+  --scanline: rgba(60,168,104,0.03);
+`;
+
+const LIGHT_VARS = `
+  --bg: #f4f1eb; --panel: #fffdf7; --panelBorder: #d8cdb4;
+  --text: #4a4030; --textBright: #1a1208; --textDim: #9a8e78;
+  --accent: #a07820; --accentDim: #c8a860;
+  --green: #2a8850; --greenDim: #d0f0de;
+  --red: #a83028; --redDim: #f5ddd8;
+  --scanline: rgba(160,120,32,0.03);
+`;
+
+const BASE_STYLE = `
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); transition: background 0.2s; }
+  @keyframes boardReveal { from { opacity:0; transform:scale(0.96); filter:blur(3px); } to { opacity:1; transform:scale(1); filter:blur(0); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes glowPulse { 0%,100% { box-shadow:0 0 0 rgba(196,154,60,0); } 50% { box-shadow:0 0 18px rgba(196,154,60,0.12); } }
+  button:hover { filter: brightness(1.1); }
+  input:focus { outline: none; border-color: var(--accent) !important; }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+`;
+
+function applyTheme(dark) {
+  document.documentElement.style.cssText = dark ? DARK_VARS : LIGHT_VARS;
 }
+
+// ── Root ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [dark, setDark] = useState(true);
   const [screen, setScreen] = useState("home");
 
-  Object.assign(T, dark ? DARK_THEME : LIGHT_THEME);
+  useEffect(() => { applyTheme(dark); }, [dark]);
+  useEffect(() => { applyTheme(true); }, []); // init on mount
 
   function toggle() { setDark(d => !d); }
 
-  let child;
-  if (screen === "minefield")   child = <MinefieldGame    onHome={() => setScreen("home")} dark={dark} />;
-  else if (screen === "sniper")      child = <SniperGame       onHome={() => setScreen("home")} dark={dark} />;
-  else if (screen === "coordinates") child = <CoordinatesGame  onHome={() => setScreen("home")} dark={dark} />;
-  else if (screen === "fork")        child = <ForkGame         onHome={() => setScreen("home")} dark={dark} />;
-  else if (screen === "mate1")       child = <MateGame         onHome={() => setScreen("home")} dark={dark} />;
-  else                               child = <HomeScreen        onSelect={setScreen} dark={dark} />;
-
-  return (
-    <ThemeContext.Provider value={{ dark, toggle }}>
-      {child}
-    </ThemeContext.Provider>
+  const themeBtn = (
+    <button onClick={toggle} title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      style={{ background:"transparent", border:`1px solid ${T.panelBorder}`, borderRadius:4,
+               color:T.textDim, fontSize:16, cursor:"pointer", padding:"5px 9px",
+               fontFamily:"inherit", lineHeight:1, flexShrink:0 }}>
+      {dark ? "☀" : "☾"}
+    </button>
   );
+
+  if (screen === "minefield")   return <MinefieldGame    onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  if (screen === "sniper")      return <SniperGame       onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  if (screen === "coordinates") return <CoordinatesGame  onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  if (screen === "fork")        return <ForkGame         onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  if (screen === "mate1")       return <MateGame         onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  return <HomeScreen onSelect={setScreen} themeBtn={themeBtn} />;
 }
