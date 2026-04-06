@@ -223,7 +223,7 @@ function pieceMoves(type, sq, occupied = new Set()) {
 function chipStyle(val, current) {
   return {
     padding: "5px 11px", border: `1px solid ${val === current ? T.accent : T.panelBorder}`,
-    borderRadius: 4, background: val === current ? "rgba(196,154,60,0.12)" : "transparent",
+    borderRadius: 4, background: val === current ? "rgba(74,158,202,0.12)" : "transparent",
     color: val === current ? T.accent : T.textDim, cursor: "pointer", fontSize: 13,
     fontFamily: "inherit", transition: "all 0.2s",
   };
@@ -262,7 +262,7 @@ function AppShell({ title, subtitle, onHome, headerRight, children, themeBtn }) 
 function HowToPlayBtn({ onClick }) {
   return (
     <button onClick={onClick} style={{
-      background: "rgba(196,154,60,0.1)", border: `1px solid ${T.accent}`, borderRadius: 4,
+      background: "rgba(74,158,202,0.1)", border: `1px solid ${T.accent}`, borderRadius: 4,
       padding: "5px 12px", color: T.accent, fontSize: 11, fontWeight: 600,
       cursor: "pointer", fontFamily: "inherit", letterSpacing: 1,
     }}>HOW TO PLAY</button>
@@ -278,7 +278,7 @@ function RulesModal({ onClose, children }) {
           <button onClick={onClose} style={{ background: "transparent", border: "none", color: T.textDim, fontSize: 18, cursor: "pointer", fontFamily: "inherit" }}>✕</button>
         </div>
         {children}
-        <button onClick={onClose} style={{ marginTop: 8, width: "100%", padding: "10px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 13, fontFamily: "inherit", cursor: "pointer", letterSpacing: 1 }}>GOT IT</button>
+        <button onClick={onClose} style={{ marginTop: 8, width: "100%", padding: "10px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 13, fontFamily: "inherit", cursor: "pointer", letterSpacing: 1 }}>GOT IT</button>
       </div>
     </div>
   );
@@ -301,6 +301,13 @@ const GAMES = [
     title: "Blindfold Minefield",
     tagline: "Navigate the minefield",
     description: "Navigate a piece from its starting square to a target, avoiding all squares controlled by enemy pieces. The position is described in text. No board is shown.",
+    difficulty: "Hard",
+  },
+  {
+    id: "puzzles",
+    title: "Blindfold Puzzles",
+    tagline: "Calculate the line",
+    description: "Real Lichess puzzles, no board. Enter your moves one at a time — the opponent replies after each correct move. Highly customizable: filter by piece count, number of half-moves, and rating range up to 2000+.",
     difficulty: "Hard",
   },
   {
@@ -690,7 +697,7 @@ function MinefieldGame({ onHome, themeBtn }) {
       <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", flex: 1 }}>
         {phase === MPHASES.BRIEFING && (
           <div style={{ animation: "fadeUp 0.3s ease" }}>
-            <div style={{ background: "rgba(196,154,60,0.06)", border: `1px solid rgba(196,154,60,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 10, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
+            <div style={{ background: "rgba(74,158,202,0.06)", border: `1px solid rgba(74,158,202,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 10, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
               <span style={{ color: T.textBright }}>Navigate your piece from start to target while avoiding squares controlled by enemy pieces, without seeing the board.</span>
             </div>
             <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: "20px 24px", minHeight: 180 }}>
@@ -699,7 +706,7 @@ function MinefieldGame({ onHome, themeBtn }) {
             </div>
             {briefingDone && (
               <div style={{ marginTop: 16, display: "flex", justifyContent: "center", gap: 12, animation: "fadeUp 0.4s ease" }}>
-                <button onClick={startInput} style={{ padding: "10px 32px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14, fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1, animation: "glowPulse 2s infinite" }}>ENTER SOLUTION</button>
+                <button onClick={startInput} style={{ padding: "10px 32px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 14, fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1, animation: "glowPulse 2s infinite" }}>ENTER SOLUTION</button>
                 <button onClick={giveUp} style={{ padding: "10px 24px", border: `1px solid ${T.panelBorder}`, borderRadius: 4, background: "transparent", color: T.textDim, fontSize: 13, fontFamily: "inherit", cursor: "pointer", fontWeight: 400, letterSpacing: 1 }}>SHOW SOLUTION</button>
               </div>
             )}
@@ -739,7 +746,7 @@ function MinefieldGame({ onHome, themeBtn }) {
 
         {phase === MPHASES.RESULT && (
           <div style={{ animation: "fadeUp 0.3s ease" }}>
-            <div style={{ background: result?.type === "correct" ? T.greenDim : result?.type === "gaveup" ? T.panel : T.redDim, border: `1px solid ${result?.type === "correct" ? "rgba(60,168,104,0.3)" : result?.type === "gaveup" ? T.panelBorder : "rgba(196,74,60,0.3)"}`, borderRadius: 6, padding: "14px 20px", marginBottom: 16, textAlign: "center" }}>
+            <div style={{ background: result?.type === "correct" ? T.greenDim : result?.type === "gaveup" ? T.panel : T.redDim, border: `1px solid ${result?.type === "correct" ? "rgba(60,168,104,0.3)" : result?.type === "gaveup" ? T.panelBorder : "rgba(224,85,85,0.3)"}`, borderRadius: 6, padding: "14px 20px", marginBottom: 16, textAlign: "center" }}>
               <div style={{ fontSize: 15, fontWeight: 500, color: result?.type === "correct" ? T.green : result?.type === "gaveup" ? T.text : T.red }}>
                 {result?.type === "correct" ? "✓" : result?.type === "gaveup" ? "⊘" : "✗"} {result?.message}
               </div>
@@ -761,7 +768,7 @@ function MinefieldGame({ onHome, themeBtn }) {
               </div>
             )}
             <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
-              <button onClick={newPuzzle} style={{ padding: "10px 32px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14, fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1, animation: "glowPulse 2s infinite" }}>NEXT PUZZLE</button>
+              <button onClick={newPuzzle} style={{ padding: "10px 32px", border: `1px solid ${T.accent}`, borderRadius: 4, background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 14, fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1, animation: "glowPulse 2s infinite" }}>NEXT PUZZLE</button>
             </div>
           </div>
         )}
@@ -1212,7 +1219,7 @@ function SniperBoard({ board, finalBoard, trackedFrom, trackedPos, selectedBlack
         else if (cap && !isSelected) bg = T.accent + '44';
         else if (!cap && isSelected) bg = '#c47060';
       } else if (!submitted && isBlack && isSelected) {
-        bg = "rgba(196,154,60,0.5)";
+        bg = "rgba(74,158,202,0.5)";
       }
 
       cells.push(
@@ -1331,7 +1338,7 @@ function SniperGame({ onHome, themeBtn }) {
           />
           <button onClick={() => { if (customInput) setNumMoves(customInput); }} style={{
             padding: "4px 10px", border: `1px solid ${T.accent}`, borderRadius: 4,
-            background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 12,
+            background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 12,
             fontFamily: "inherit", cursor: "pointer", fontWeight: 600,
           }}>OK</button>
           <div style={{ flex: 1 }} />
@@ -1341,14 +1348,14 @@ function SniperGame({ onHome, themeBtn }) {
 
       <div style={{ width: "100%", maxWidth: 540, padding: "0 20px", flex: 1 }}>
 
-        <div style={{ background:"rgba(196,154,60,0.06)", border:`1px solid rgba(196,154,60,0.2)`, borderRadius:6, padding:"10px 16px", marginBottom:12, fontSize:12, color:T.textDim, lineHeight:1.6, textAlign:"center" }}>
+        <div style={{ background:"rgba(74,158,202,0.06)", border:`1px solid rgba(74,158,202,0.2)`, borderRadius:6, padding:"10px 16px", marginBottom:12, fontSize:12, color:T.textDim, lineHeight:1.6, textAlign:"center" }}>
           <span style={{ color:T.textBright }}>Follow the moves mentally from the initial position, then tap the black pieces your tracked piece can capture in the final position.</span>
         </div>
 
         {/* Board — initial position, clickable */}
         <div style={{ background:T.panel, border:`1px solid ${T.panelBorder}`, borderRadius:6, padding:"14px 12px", marginBottom:12, animation:"fadeUp 0.3s ease" }}>
           <div style={{ fontSize:9, color:T.accentDim, letterSpacing:3, marginBottom:10 }}>▸ INITIAL POSITION — tap black pieces to select</div>
-          <div style={{ marginBottom:12, padding:"8px 12px", background:"rgba(196,154,60,0.12)", border:`1px solid rgba(196,154,60,0.35)`, borderRadius:5, display:"flex", alignItems:"center", gap:10 }}>
+          <div style={{ marginBottom:12, padding:"8px 12px", background:"rgba(74,158,202,0.12)", border:`1px solid rgba(74,158,202,0.35)`, borderRadius:5, display:"flex", alignItems:"center", gap:10 }}>
             <span style={{ fontSize:18 }}>{PIECE_INFO[puzzle.trackedPiece.type].white}</span>
             <div>
               <div style={{ fontSize:11, color:T.accent, fontWeight:600, letterSpacing:1 }}>TRACK THIS PIECE</div>
@@ -1384,7 +1391,7 @@ function SniperGame({ onHome, themeBtn }) {
         {/* Result */}
         {submitted && score && (
           <div style={{ animation:"fadeUp 0.3s ease" }}>
-            <div style={{ background:score.perfect?T.greenDim:"rgba(196,154,60,0.08)", border:`1px solid ${score.perfect?"rgba(60,168,104,0.3)":T.panelBorder}`, borderRadius:6, padding:"16px 20px", marginBottom:12, textAlign:"center" }}>
+            <div style={{ background:score.perfect?T.greenDim:"rgba(74,158,202,0.08)", border:`1px solid ${score.perfect?"rgba(60,168,104,0.3)":T.panelBorder}`, borderRadius:6, padding:"16px 20px", marginBottom:12, textAlign:"center" }}>
               <div style={{ fontSize:22, fontWeight:600, color:score.perfect?T.green:T.accent, marginBottom:4 }}>
                 {score.hits} / {score.total}
               </div>
@@ -1409,14 +1416,14 @@ function SniperGame({ onHome, themeBtn }) {
             </div>
 
             <div style={{ textAlign:"center", marginBottom:24 }}>
-              <button onClick={newPuzzle} style={{ padding:"10px 32px", border:`1px solid ${T.accent}`, borderRadius:4, background:"rgba(196,154,60,0.08)", color:T.accent, fontSize:14, fontFamily:"inherit", cursor:"pointer", fontWeight:500, letterSpacing:1, animation:"glowPulse 2s infinite" }}>NEXT PUZZLE</button>
+              <button onClick={newPuzzle} style={{ padding:"10px 32px", border:`1px solid ${T.accent}`, borderRadius:4, background:"rgba(74,158,202,0.08)", color:T.accent, fontSize:14, fontFamily:"inherit", cursor:"pointer", fontWeight:500, letterSpacing:1, animation:"glowPulse 2s infinite" }}>NEXT PUZZLE</button>
             </div>
           </div>
         )}
 
         {!submitted && (
           <div style={{ textAlign:"center", marginBottom:24 }}>
-            <button onClick={() => setSubmitted(true)} style={{ padding:"10px 40px", border:`1px solid ${T.accent}`, borderRadius:4, background:"rgba(196,154,60,0.08)", color:T.accent, fontSize:14, fontFamily:"inherit", cursor:"pointer", fontWeight:500, letterSpacing:1 }}>SUBMIT</button>
+            <button onClick={() => setSubmitted(true)} style={{ padding:"10px 40px", border:`1px solid ${T.accent}`, borderRadius:4, background:"rgba(74,158,202,0.08)", color:T.accent, fontSize:14, fontFamily:"inherit", cursor:"pointer", fontWeight:500, letterSpacing:1 }}>SUBMIT</button>
           </div>
         )}
       </div>
@@ -1543,7 +1550,7 @@ function CoordinatesGame({ onHome, themeBtn }) {
         {/* IDLE */}
         {phase === COORD_MODES.IDLE && (
           <div style={{ animation: "fadeUp 0.3s ease" }}>
-            <div style={{ background: "rgba(196,154,60,0.06)", border: `1px solid rgba(196,154,60,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
+            <div style={{ background: "rgba(74,158,202,0.06)", border: `1px solid rgba(74,158,202,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
               <span style={{ color: T.textBright }}>
                 {mode === "score"
                   ? "10 squares, answer as fast as you can. Light or Dark?"
@@ -1553,7 +1560,7 @@ function CoordinatesGame({ onHome, themeBtn }) {
             <div style={{ textAlign: "center" }}>
               <button onClick={startGame} style={{
                 padding: "14px 48px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 16,
+                background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 16,
                 fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                 animation: "glowPulse 2s infinite",
               }}>START</button>
@@ -1674,7 +1681,7 @@ function CoordinatesGame({ onHome, themeBtn }) {
             <div style={{ textAlign: "center" }}>
               <button onClick={startGame} style={{
                 padding: "10px 40px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14,
+                background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 14,
                 fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                 animation: "glowPulse 2s infinite",
               }}>PLAY AGAIN</button>
@@ -1877,7 +1884,7 @@ function ForkGame({ onHome, themeBtn }) {
         {/* IDLE */}
         {phase === FORK_PHASES.IDLE && (
           <div style={{ animation: "fadeUp 0.3s ease" }}>
-            <div style={{ background: "rgba(196,154,60,0.06)", border: `1px solid rgba(196,154,60,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
+            <div style={{ background: "rgba(74,158,202,0.06)", border: `1px solid rgba(74,158,202,0.2)`, borderRadius: 6, padding: "10px 16px", marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: "center" }}>
               <span style={{ color: T.textBright }}>
                 {mode === "score"
                   ? "5 puzzles. Find the fork square, or answer \"no\" if none exists."
@@ -1887,7 +1894,7 @@ function ForkGame({ onHome, themeBtn }) {
             <div style={{ textAlign: "center" }}>
               <button onClick={startGame} style={{
                 padding: "14px 48px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 16,
+                background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 16,
                 fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                 animation: "glowPulse 2s infinite",
               }}>START</button>
@@ -1937,7 +1944,7 @@ function ForkGame({ onHome, themeBtn }) {
               <div style={{ marginBottom: 16 }}>
                 <div style={{
                   background: feedback.correct ? T.greenDim : T.redDim,
-                  border: `1px solid ${feedback.correct ? "rgba(60,168,104,0.3)" : "rgba(196,74,60,0.3)"}`,
+                  border: `1px solid ${feedback.correct ? "rgba(60,168,104,0.3)" : "rgba(224,85,85,0.3)"}`,
                   borderRadius: 6, padding: "12px 16px",
                   fontSize: 13, color: feedback.correct ? T.green : T.red,
                   marginBottom: !feedback.correct ? 10 : 0,
@@ -2003,14 +2010,14 @@ function ForkGame({ onHome, themeBtn }) {
                       {mode === "score" && (
                         <button onClick={() => { setPendingResults(null); nextQuestion(pendingResults); }} style={{
                           padding: "9px 32px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                          background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 13,
+                          background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 13,
                           fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                         }}>NEXT →</button>
                       )}
                       {mode === "streak" && (
                         <button onClick={() => setPhase(FORK_PHASES.RESULT)} style={{
                           padding: "9px 32px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                          background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 13,
+                          background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 13,
                           fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                         }}>SEE RESULTS →</button>
                       )}
@@ -2059,7 +2066,7 @@ function ForkGame({ onHome, themeBtn }) {
                     setTimeout(() => nextQuestion(newResults), 1200);
                   }} style={{
                     padding: "10px 14px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                    background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 12,
+                    background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 12,
                     fontFamily: "inherit", cursor: "pointer", whiteSpace: "nowrap", fontWeight: 600,
                   }}>No fork</button>
                 </div>
@@ -2114,7 +2121,7 @@ function ForkGame({ onHome, themeBtn }) {
             <div style={{ textAlign: "center" }}>
               <button onClick={startGame} style={{
                 padding: "10px 40px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14,
+                background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 14,
                 fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                 animation: "glowPulse 2s infinite",
               }}>PLAY AGAIN</button>
@@ -2337,7 +2344,7 @@ function MateGame({ onHome, themeBtn }) {
         )}
 
         {!loading && error && (
-          <div style={{ background: T.redDim, border: "1px solid rgba(196,74,60,0.3)", borderRadius: 6, padding: "16px 20px", color: T.red, fontSize: 13, marginBottom: 16 }}>
+          <div style={{ background: T.redDim, border: "1px solid rgba(224,85,85,0.3)", borderRadius: 6, padding: "16px 20px", color: T.red, fontSize: 13, marginBottom: 16 }}>
             {error}
             <div style={{ marginTop: 10 }}>
               <button onClick={newPuzzle} style={{ background: "transparent", border: `1px solid ${T.red}`, borderRadius: 4, color: T.red, padding: "6px 16px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>Retry</button>
@@ -2381,7 +2388,7 @@ function MateGame({ onHome, themeBtn }) {
               <div style={{ marginBottom: 14 }}>
                 <div style={{
                   background: feedback.correct ? T.greenDim : T.redDim,
-                  border: `1px solid ${feedback.correct ? "rgba(60,168,104,0.3)" : "rgba(196,74,60,0.3)"}`,
+                  border: `1px solid ${feedback.correct ? "rgba(60,168,104,0.3)" : "rgba(224,85,85,0.3)"}`,
                   borderRadius: 6, padding: "12px 16px",
                   marginBottom: feedback.correct ? 0 : 10,
                   fontSize: 13, color: feedback.correct ? T.green : T.red,
@@ -2447,7 +2454,7 @@ function MateGame({ onHome, themeBtn }) {
               <div style={{ textAlign: "center", marginBottom: 24 }}>
                 <button onClick={newPuzzle} style={{
                   padding: "10px 32px", border: `1px solid ${T.accent}`, borderRadius: 4,
-                  background: "rgba(196,154,60,0.08)", color: T.accent, fontSize: 14,
+                  background: "rgba(74,158,202,0.08)", color: T.accent, fontSize: 14,
                   fontFamily: "inherit", cursor: "pointer", fontWeight: 500, letterSpacing: 1,
                   animation: "glowPulse 2s infinite",
                 }}>NEXT PUZZLE</button>
@@ -2460,8 +2467,328 @@ function MateGame({ onHome, themeBtn }) {
   );
 }
 
-// Helper used inside feedback render
-function normalize(s) { return s.replace(/\s/g,'').replace(/[+#!=?]/g,'').toLowerCase(); }
+// ══════════════════════════════════════════════════════════════════════════════
+// GAME 6 — BLINDFOLD PUZZLES
+// ══════════════════════════════════════════════════════════════════════════════
+
+const _INLINE_LONG_PUZZLES = {"easy":{"short":{"standard":[{"id":"09eXc","fen":"1r1k4/1P6/2K5/8/1P6/8/8/8 w - - 3 52","solution":["b5","Ke7","Kc7"],"turn":"white","pieces":5,"moves":3,"rating":1308,"themes":"crushing endgame master quietMove rookEndgame short","white":"♔ King c6  ♙ Pawn b4, b7","black":"♚ King d8  ♜ Rook b8"},{"id":"08Dl3","fen":"8/8/8/3N1P2/5K2/1kp5/8/8 b - - 0 58","solution":["c2","Ke5","c1=Q"],"turn":"black","pieces":5,"moves":3,"rating":819,"themes":"advancedPawn crushing endgame knightEndgame promotion short","white":"♔ King f4  ♘ Knight d5  ♙ Pawn f5","black":"♚ King b3  ♟ Pawn c3"},{"id":"03A1C","fen":"4K3/1k2P2q/3Q4/8/8/8/8/8 b - - 4 55","solution":["Qg8+","Kd7","Qc8#"],"turn":"black","pieces":5,"moves":3,"rating":1327,"themes":"endgame master mate mateIn2 queenEndgame short","white":"♔ King e8  ♕ Queen d6  ♙ Pawn e7","black":"♚ King b7  ♛ Queen h7"},{"id":"09TD1","fen":"8/8/8/P7/5p2/8/4K1k1/8 b - - 1 46","solution":["f3+","Ke3","f2"],"turn":"black","pieces":4,"moves":3,"rating":565,"themes":"advancedPawn crushing endgame pawnEndgame short","white":"♔ King e2  ♙ Pawn a5","black":"♚ King g2  ♟ Pawn f4"},{"id":"02Yx1","fen":"4R3/8/K7/1P2r3/5k2/8/8/8 b - - 2 65","solution":["Rxe8","Kb6","Ke5"],"turn":"black","pieces":5,"moves":3,"rating":1784,"themes":"crushing defensiveMove endgame hangingPiece master rookEndgame short","white":"♔ King a6  ♖ Rook e8  ♙ Pawn b5","black":"♚ King f4  ♜ Rook e5"}],"hard":[{"id":"26NWe","fen":"4K3/3P4/4P3/4k3/8/8/7r/8 w - - 5 75","solution":["e7","Ke6","Kd8"],"turn":"white","pieces":5,"moves":3,"rating":2355,"themes":"advancedPawn crushing defensiveMove endgame rookEndgame short","white":"♔ King e8  ♙ Pawn d7, e6","black":"♚ King e5  ♜ Rook h2"},{"id":"0VuEF","fen":"8/8/8/1p6/2k2KP1/8/8/8 w - - 0 48","solution":["g5","Kd5","g6","Ke6","Kg5"],"turn":"white","pieces":4,"moves":5,"rating":2280,"themes":"crushing defensiveMove endgame long pawnEndgame quietMove","white":"♔ King f4  ♙ Pawn g4","black":"♚ King c4  ♟ Pawn b5"},{"id":"0Si3m","fen":"8/3k4/p7/2K5/1P6/8/8/8 w - - 5 60","solution":["Kb6","a5","Kxa5","Kc6","Ka6"],"turn":"white","pieces":4,"moves":5,"rating":2002,"themes":"crushing defensiveMove endgame long pawnEndgame","white":"♔ King c5  ♙ Pawn b4","black":"♚ King d7  ♟ Pawn a6"},{"id":"0AiJd","fen":"8/6k1/6p1/1K4Np/8/8/8/8 b - - 2 61","solution":["Kf6","Nf3","Kf5","Kc4","Ke4"],"turn":"black","pieces":5,"moves":5,"rating":2701,"themes":"crushing endgame knightEndgame long","white":"♔ King b5  ♘ Knight g5","black":"♚ King g7  ♟ Pawn g6, h5"},{"id":"10SrD","fen":"8/8/8/1pk5/4K3/5P2/8/8 b - - 1 68","solution":["Kc4","Ke3","Kc3","Ke2","b4"],"turn":"black","pieces":4,"moves":5,"rating":2657,"themes":"crushing defensiveMove endgame long pawnEndgame","white":"♔ King e4  ♙ Pawn f3","black":"♚ King c5  ♟ Pawn b5"}]},"medium":{"standard":[{"id":"0H5H4","fen":"8/8/5K2/p7/6P1/1k6/8/8 b - - 1 44","solution":["a4","Kf7","a3","g5","a2","g6","a1=Q"],"turn":"black","pieces":4,"moves":7,"rating":659,"themes":"advancedPawn crushing endgame pawnEndgame promotion quietMove veryLong","white":"♔ King f6  ♙ Pawn g4","black":"♚ King b3  ♟ Pawn a5"},{"id":"0K8k9","fen":"8/8/8/p5K1/6P1/1k3P2/8/8 b - - 0 54","solution":["a4","f4","a3","f5","a2","f6","a1=Q"],"turn":"black","pieces":5,"moves":7,"rating":599,"themes":"advancedPawn crushing endgame master pawnEndgame promotion quietMove veryLong","white":"♔ King g5  ♙ Pawn f3, g4","black":"♚ King b3  ♟ Pawn a5"},{"id":"0wdFP","fen":"8/8/8/4p3/4k1K1/6P1/8/8 b - - 0 45","solution":["Kd3","Kf3","e4+","Kf2","Kd2","g4","e3+"],"turn":"black","pieces":4,"moves":7,"rating":1840,"themes":"crushing endgame pawnEndgame veryLong","white":"♔ King g4  ♙ Pawn g3","black":"♚ King e4  ♟ Pawn e5"},{"id":"0gfhl","fen":"r7/k7/8/1K6/8/8/8/7R w - - 0 56","solution":["Rh7+","Kb8","Kb6","Kc8","Rh8+","Kd7","Rxa8"],"turn":"white","pieces":4,"moves":7,"rating":1678,"themes":"crushing endgame exposedKing rookEndgame skewer veryLong","white":"♔ King b5  ♖ Rook h1","black":"♚ King a7  ♜ Rook a8"},{"id":"0ahGl","fen":"8/8/8/2k1KpP1/1p6/8/8/8 w - - 0 54","solution":["g6","b3","g7","b2","g8=Q","b1=Q","Qc8+"],"turn":"white","pieces":5,"moves":7,"rating":1670,"themes":"advancedPawn crushing endgame pawnEndgame promotion veryLong","white":"♔ King e5  ♙ Pawn g5","black":"♚ King c5  ♟ Pawn b4, f5"}],"hard":[{"id":"4DVMg","fen":"8/5p2/8/5P2/8/1K6/8/4k3 b - - 1 64","solution":["Kd2","Kc4","Ke3","Kd5","Kf4","f6","Kf5"],"turn":"black","pieces":4,"moves":7,"rating":2316,"themes":"crushing endgame pawnEndgame veryLong","white":"♔ King b3  ♙ Pawn f5","black":"♚ King e1  ♟ Pawn f7"},{"id":"0eLmS","fen":"8/8/r7/1K3kp1/8/R7/8/8 w - - 0 53","solution":["Rxa6","g4","Kc4","g3","Kd3","g2","Ra1","Kf4","Ke2"],"turn":"white","pieces":5,"moves":9,"rating":2103,"themes":"crushing defensiveMove endgame hangingPiece quietMove rookEndgame veryLong","white":"♔ King b5  ♖ Rook a3","black":"♚ King f5  ♜ Rook a6  ♟ Pawn g5"},{"id":"1zoe2","fen":"8/6K1/8/5R1P/6k1/5p2/8/8 b - - 0 50","solution":["Kxf5","h6","f2","h7","f1=Q","h8=Q","Qg2+","Kf8","Qa8+"],"turn":"black","pieces":5,"moves":9,"rating":2101,"themes":"advancedPawn crushing endgame hangingPiece promotion veryLong","white":"♔ King g7  ♖ Rook f5  ♙ Pawn h5","black":"♚ King g4  ♟ Pawn f3"},{"id":"0HmzV","fen":"8/5k1K/8/4nPP1/8/8/8/8 w - - 3 61","solution":["g6+","Ke7","f6+","Kxf6","g7","Kf5","g8=Q"],"turn":"white","pieces":5,"moves":7,"rating":2324,"themes":"advancedPawn crushing endgame exposedKing knightEndgame promotion veryLong","white":"♔ King h7  ♙ Pawn f5, g5","black":"♚ King f7  ♞ Knight e5"},{"id":"3jZJD","fen":"8/8/8/5p2/1P6/4k3/2K5/8 w - - 1 46","solution":["b5","f4","Kd1","f3","Ke1","f2+","Kf1"],"turn":"white","pieces":4,"moves":7,"rating":2118,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King c2  ♙ Pawn b4","black":"♚ King e3  ♟ Pawn f5"}]},"long":{"standard":[{"id":"1j8Cp","fen":"8/6p1/8/5K2/3k4/6P1/8/8 w - - 2 52","solution":["g4","Ke3","g5","Kf3","g6","Kg3","Ke6","Kg4","Kf7","Kf5","Kxg7"],"turn":"white","pieces":4,"moves":11,"rating":1903,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King f5  ♙ Pawn g3","black":"♚ King d4  ♟ Pawn g7"},{"id":"1vpw1","fen":"8/8/8/5K1p/3k1P2/8/8/8 w - - 0 58","solution":["Kg5","Ke4","f5","Ke5","f6","Ke6","Kg6","h4","f7","Ke7","Kg7"],"turn":"white","pieces":4,"moves":11,"rating":1155,"themes":"advancedPawn crushing defensiveMove endgame pawnEndgame quietMove veryLong","white":"♔ King f5  ♙ Pawn f4","black":"♚ King d4  ♟ Pawn h5"},{"id":"3dGOM","fen":"8/8/8/p7/3k3P/8/5K2/8 b - - 0 57","solution":["a4","h5","Ke5","h6","Kf6","h7","Kg7","h8=R","Kxh8","Ke1","a3"],"turn":"black","pieces":4,"moves":11,"rating":1962,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King f2  ♙ Pawn h4","black":"♚ King d4  ♟ Pawn a5"},{"id":"ABC7z","fen":"8/8/8/3kp2K/5R1P/8/8/8 b - - 0 61","solution":["exf4","Kg4","Ke4","h5","f3","Kg3","Ke3","h6","f2","Kg2","Ke2","h7","f1=Q+"],"turn":"black","pieces":5,"moves":13,"rating":1242,"themes":"advancedPawn crushing endgame promotion veryLong","white":"♔ King h5  ♖ Rook f4  ♙ Pawn h4","black":"♚ King d5  ♟ Pawn e5"},{"id":"4v10V","fen":"8/8/1K1k4/4p3/P7/8/8/8 w - - 0 59","solution":["a5","e4","a6","e3","a7","e2","a8=Q","e1=Q","Qd8+","Ke6","Qe8+","Kf6","Qxe1"],"turn":"white","pieces":4,"moves":13,"rating":1469,"themes":"advancedPawn crushing endgame pawnEndgame promotion quietMove skewer veryLong","white":"♔ King b6  ♙ Pawn a4","black":"♚ King d6  ♟ Pawn e5"}],"hard":[{"id":"Arf65","fen":"8/8/4k3/2p3KP/8/4P3/8/8 b - - 0 47","solution":["c4","h6","Kf7","h7","Kg7","e4","c3","h8=Q+","Kxh8","Kf4","c2"],"turn":"black","pieces":5,"moves":11,"rating":2123,"themes":"advancedPawn crushing endgame pawnEndgame quietMove veryLong","white":"♔ King g5  ♙ Pawn e3, h5","black":"♚ King e6  ♟ Pawn c5"},{"id":"3JaB2","fen":"8/8/8/3K3p/2P5/8/5k2/8 b - - 1 57","solution":["h4","c5","h3","c6","h2","c7","h1=Q+","Kd6","Qh3","Kc6","Qc8"],"turn":"black","pieces":4,"moves":11,"rating":2285,"themes":"advancedPawn crushing endgame pawnEndgame promotion quietMove veryLong","white":"♔ King d5  ♙ Pawn c4","black":"♚ King f2  ♟ Pawn h5"},{"id":"H3UAt","fen":"8/4k3/6K1/4p3/7P/8/8/8 b - - 2 73","solution":["e4","h5","Kf8","h6","Kg8","h7+","Kh8","Kg5","e3","Kf4","e2"],"turn":"black","pieces":4,"moves":11,"rating":2100,"themes":"advancedPawn crushing endgame pawnEndgame quietMove veryLong","white":"♔ King g6  ♙ Pawn h4","black":"♚ King e7  ♟ Pawn e5"},{"id":"2XKh4","fen":"8/8/5p2/4k3/PK6/8/8/8 w - - 1 46","solution":["Kc5","Ke6","Kc6","f5","a5","f4","a6","f3","a7","f2","a8=Q"],"turn":"white","pieces":4,"moves":11,"rating":2057,"themes":"advancedPawn crushing endgame pawnEndgame promotion quietMove veryLong","white":"♔ King b4  ♙ Pawn a4","black":"♚ King e5  ♟ Pawn f6"},{"id":"BjsAM","fen":"8/8/8/1P2kp2/8/K7/8/8 b - - 2 52","solution":["f4","Kb4","f3","b6","Kd6","Kc3","f2","b7","Kc7","b8=Q+","Kxb8"],"turn":"black","pieces":4,"moves":11,"rating":2015,"themes":"advancedPawn crushing endgame pawnEndgame quietMove veryLong","white":"♔ King a3  ♙ Pawn b5","black":"♚ King e5  ♟ Pawn f5"}]}},"medium":{"short":{"standard":[{"id":"00lHu","fen":"8/p7/6P1/4p3/R5K1/1r2kp1P/8/8 w - - 0 48","solution":["g7","Rb8","Ra3+"],"turn":"white","pieces":9,"moves":3,"rating":1791,"themes":"advancedPawn crushing endgame rookEndgame short","white":"♔ King g4  ♖ Rook a4  ♙ Pawn g6, h3","black":"♚ King e3  ♜ Rook b3  ♟ Pawn a7, e5, f3"},{"id":"006OI","fen":"6R1/p7/5k2/P7/6KP/8/8/5r2 b - - 6 53","solution":["Rg1+","Kf4","Rxg8"],"turn":"black","pieces":7,"moves":3,"rating":843,"themes":"crushing endgame rookEndgame short skewer","white":"♔ King g4  ♖ Rook g8  ♙ Pawn a5, h4","black":"♚ King f6  ♜ Rook f1  ♟ Pawn a7"},{"id":"00hYk","fen":"8/8/6p1/3nkp1p/7P/1B2KPP1/8/8 w - - 1 55","solution":["Bxd5","Kxd5","Kf4"],"turn":"white","pieces":10,"moves":3,"rating":1277,"themes":"crushing endgame short","white":"♔ King e3  ♗ Bishop b3  ♙ Pawn f3, g3, h4","black":"♚ King e5  ♞ Knight d5  ♟ Pawn f5, g6, h5"},{"id":"00b6f","fen":"6k1/8/5B2/1R3K2/6p1/6P1/P4P1q/8 b - - 0 41","solution":["Qh5+","Bg5","Qf7+","Kxg4","Qc4+"],"turn":"black","pieces":9,"moves":5,"rating":1749,"themes":"crushing endgame long","white":"♔ King f5  ♖ Rook b5  ♗ Bishop f6  ♙ Pawn a2, f2, g3","black":"♚ King g8  ♛ Queen h2  ♟ Pawn g4"},{"id":"000rO","fen":"3R4/8/8/KB2b3/1p6/1P2k3/3p4/8 b - - 0 58","solution":["Bc7+","Kxb4","Bxd8"],"turn":"black","pieces":8,"moves":3,"rating":1110,"themes":"crushing endgame fork master short","white":"♔ King a5  ♖ Rook d8  ♗ Bishop b5  ♙ Pawn b3","black":"♚ King e3  ♝ Bishop e5  ♟ Pawn b4, d2"}],"hard":[{"id":"022mo","fen":"8/3R1p2/P4kp1/2K4p/7r/8/8/8 w - - 0 38","solution":["a7","Ra4","Kb5","Rxa7","Rxa7"],"turn":"white","pieces":8,"moves":5,"rating":2583,"themes":"advancedPawn advantage endgame long rookEndgame","white":"♔ King c5  ♖ Rook d7  ♙ Pawn a6","black":"♚ King f6  ♜ Rook h4  ♟ Pawn f7, g6, h5"},{"id":"01Nny","fen":"8/p7/5k2/8/3P1K1p/P7/8/8 b - - 3 46","solution":["Ke6","Kg4","Kd5","a4","Kxd4"],"turn":"black","pieces":6,"moves":5,"rating":2122,"themes":"crushing endgame long pawnEndgame","white":"♔ King f4  ♙ Pawn a3, d4","black":"♚ King f6  ♟ Pawn a7, h4"},{"id":"03DEb","fen":"5r2/8/kpBp2R1/3P4/P6K/8/5p2/8 b - - 1 46","solution":["f1=Q","Bb5+","Qxb5","axb5+","Kxb5"],"turn":"black","pieces":10,"moves":5,"rating":2204,"themes":"advancedPawn crushing endgame long promotion","white":"♔ King h4  ♖ Rook g6  ♗ Bishop c6  ♙ Pawn a4, d5","black":"♚ King a6  ♜ Rook f8  ♟ Pawn b6, d6, f2"},{"id":"02OW7","fen":"4R3/2k5/p4P2/8/8/8/rp4PK/8 w - - 0 39","solution":["f7","b1=Q","Re7+","Kb6","f8=Q"],"turn":"white","pieces":8,"moves":5,"rating":2244,"themes":"advancedPawn crushing endgame exposedKing long promotion rookEndgame","white":"♔ King h2  ♖ Rook e8  ♙ Pawn f6, g2","black":"♚ King c7  ♜ Rook a2  ♟ Pawn a6, b2"},{"id":"00dt1","fen":"Q7/8/3B4/2p5/1rkn4/K7/8/8 b - - 2 54","solution":["Nb5+","Ka2","Nc3+","Ka1","Rb1#"],"turn":"black","pieces":7,"moves":5,"rating":2194,"themes":"arabianMate endgame exposedKing fork long master mate mateIn3","white":"♔ King a3  ♕ Queen a8  ♗ Bishop d6","black":"♚ King c4  ♜ Rook b4  ♞ Knight d4  ♟ Pawn c5"}]},"medium":{"standard":[{"id":"07ty4","fen":"8/8/5pk1/4pn2/6KP/5P2/8/8 w - - 0 74","solution":["h5+","Kh6","Kxf5","e4","fxe4","Kxh5","Kxf6"],"turn":"white","pieces":7,"moves":7,"rating":1155,"themes":"crushing deflection endgame knightEndgame master veryLong","white":"♔ King g4  ♙ Pawn f3, h4","black":"♚ King g6  ♞ Knight f5  ♟ Pawn e5, f6"},{"id":"070XP","fen":"8/7p/6p1/6KP/6P1/7k/8/8 w - - 1 56","solution":["h6","Kg3","Kf6","Kxg4","Kg7","g5","Kxh7"],"turn":"white","pieces":6,"moves":7,"rating":1904,"themes":"crushing endgame pawnEndgame veryLong","white":"♔ King g5  ♙ Pawn g4, h5","black":"♚ King h3  ♟ Pawn g6, h7"},{"id":"07UbC","fen":"8/8/1p3K2/8/p6P/8/P4P2/2k5 b - - 0 47","solution":["b5","Ke6","b4","h5","b3","a3","b2"],"turn":"black","pieces":7,"moves":7,"rating":1921,"themes":"advancedPawn crushing endgame pawnEndgame quietMove veryLong","white":"♔ King f6  ♙ Pawn a2, f2, h4","black":"♚ King c1  ♟ Pawn a4, b6"},{"id":"07bjx","fen":"8/1p3N2/8/p2pkn2/8/1PP5/1P1K4/8 b - - 5 35","solution":["Kf6","Nd8","Nd6","Ke3","Ke7","Kd4","Kxd8"],"turn":"black","pieces":10,"moves":7,"rating":1974,"themes":"crushing defensiveMove endgame knightEndgame quietMove trappedPiece veryLong","white":"♔ King d2  ♘ Knight f7  ♙ Pawn b2, b3, c3","black":"♚ King e5  ♞ Knight f5  ♟ Pawn a5, b7, d5"},{"id":"04O0Z","fen":"8/8/6pk/7Q/1K6/1P6/P7/8 b - - 0 54","solution":["gxh5","Kc5","h4","b4","h3","b5","h2","b6","h1=Q"],"turn":"black","pieces":6,"moves":9,"rating":1306,"themes":"advancedPawn crushing endgame promotion quietMove veryLong","white":"♔ King b4  ♕ Queen h5  ♙ Pawn a2, b3","black":"♚ King h6  ♟ Pawn g6"}],"hard":[{"id":"01JUS","fen":"8/2k4p/2P1K1p1/5p2/5P2/8/7P/8 w - - 0 49","solution":["Kd5","g5","fxg5","f4","Ke4","Kxc6","Kxf4"],"turn":"white","pieces":8,"moves":7,"rating":2171,"themes":"crushing endgame pawnEndgame veryLong","white":"♔ King e6  ♙ Pawn c6, f4, h2","black":"♚ King c7  ♟ Pawn f5, g6, h7"},{"id":"06eiB","fen":"8/p7/1p5k/6p1/2P1K3/1P6/P7/8 w - - 2 57","solution":["Kf5","Kh5","b4","g4","Kf4","g3","Kxg3"],"turn":"white","pieces":8,"moves":7,"rating":2472,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King e4  ♙ Pawn a2, b3, c4","black":"♚ King h6  ♟ Pawn a7, b6, g5"},{"id":"078do","fen":"8/5k2/6p1/6P1/3r1p2/2PK4/8/8 w - - 0 72","solution":["Kxd4","Ke6","c4","f3","Ke3","f2","Kxf2","Kf5","c5"],"turn":"white","pieces":7,"moves":9,"rating":2394,"themes":"crushing defensiveMove endgame quietMove veryLong","white":"♔ King d3  ♙ Pawn c3, g5","black":"♚ King f7  ♜ Rook d4  ♟ Pawn f4, g6"},{"id":"04T3f","fen":"2Q5/pp6/8/1P2K3/7q/4k3/P7/8 b - - 6 44","solution":["Qf4+","Kd5","Qd4+","Ke6","Qg4+","Ke7","Qxc8"],"turn":"black","pieces":8,"moves":7,"rating":2296,"themes":"crushing endgame queenEndgame skewer veryLong","white":"♔ King e5  ♕ Queen c8  ♙ Pawn a2, b5","black":"♚ King e3  ♛ Queen h4  ♟ Pawn a7, b7"},{"id":"02BWG","fen":"8/8/1p4p1/p2p4/3k4/1P3PP1/P2K4/8 b - - 0 36","solution":["b5","a3","b4","a4","g5","Ke2","Kc3"],"turn":"black","pieces":10,"moves":7,"rating":2661,"themes":"crushing endgame pawnEndgame quietMove veryLong zugzwang","white":"♔ King d2  ♙ Pawn a2, b3, f3, g3","black":"♚ King d4  ♟ Pawn a5, b6, d5, g6"}]},"long":{"standard":[{"id":"0Bsai","fen":"8/8/2pKBp2/5n2/1P2k3/8/8/8 w - - 0 52","solution":["Bxf5+","Kxf5","Kxc6","Ke4","b5","f5","b6","f4","b7","f3","b8=Q"],"turn":"white","pieces":7,"moves":11,"rating":1233,"themes":"advancedPawn crushing endgame promotion quietMove veryLong","white":"♔ King d6  ♗ Bishop e6  ♙ Pawn b4","black":"♚ King e4  ♞ Knight f5  ♟ Pawn c6, f6"},{"id":"0bBfG","fen":"2b5/8/p1p5/8/PPP5/6Pp/5K1k/8 w - - 1 48","solution":["b5","cxb5","cxb5","axb5","axb5","Bf5","b6","Bc8","g4","Bb7","g5","Bh1","g6"],"turn":"white","pieces":10,"moves":13,"rating":1921,"themes":"bishopEndgame crushing endgame quietMove veryLong","white":"♔ King f2  ♙ Pawn a4, b4, c4, g3","black":"♚ King h2  ♝ Bishop c8  ♟ Pawn a6, c6, h3"},{"id":"19tQz","fen":"8/8/3p1kp1/p2P3p/P3K2P/8/5P2/8 w - - 1 43","solution":["Kf4","g5+","hxg5+","Kg6","f3","h4","Kg4","h3","Kxh3","Kxg5","Kg3","Kf5","f4"],"turn":"white","pieces":10,"moves":13,"rating":1780,"themes":"crushing defensiveMove endgame pawnEndgame quietMove veryLong zugzwang","white":"♔ King e4  ♙ Pawn a4, d5, f2, h4","black":"♚ King f6  ♟ Pawn a5, d6, g6, h5"},{"id":"0VpX4","fen":"8/5n2/7p/1p3P2/2k1K1NP/8/8/8 w - - 0 60","solution":["Ne5+","Nxe5","Kxe5","b4","f6","b3","f7","b2","f8=Q","b1=Q","Qc8+"],"turn":"white","pieces":8,"moves":11,"rating":1696,"themes":"advancedPawn crushing endgame knightEndgame promotion veryLong","white":"♔ King e4  ♘ Knight g4  ♙ Pawn f5, h4","black":"♚ King c4  ♞ Knight f7  ♟ Pawn b5, h6"},{"id":"0SWvf","fen":"8/8/8/p3k1pp/P1P1p2P/4K1P1/8/8 b - - 0 43","solution":["g4","c5","Kd5","c6","Kxc6","Kxe4","Kc5","Kf4","Kb4","Kg5","Kxa4"],"turn":"black","pieces":10,"moves":11,"rating":1621,"themes":"crushing endgame master pawnEndgame quietMove veryLong zugzwang","white":"♔ King e3  ♙ Pawn a4, c4, g3, h4","black":"♚ King e5  ♟ Pawn a5, e4, g5, h5"}],"hard":[{"id":"0T2lR","fen":"8/2k3p1/8/4p2p/4P3/5KP1/7P/8 w - - 0 41","solution":["g4","h4","g5","Kb6","Kg4","Kc5","Kf5","Kd4","h3","g6+","Kxg6"],"turn":"white","pieces":8,"moves":11,"rating":2368,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King f3  ♙ Pawn e4, g3, h2","black":"♚ King c7  ♟ Pawn e5, g7, h5"},{"id":"0WECn","fen":"8/2n5/6p1/1PP4p/P4k2/4p2P/4K3/8 w - - 0 56","solution":["b6","Ne6","b7","Nd4+","Ke1","Nc6","a5","Kf3","a6","Nb4","b8=Q","Nd3+","Kd1","e2+","Kc2"],"turn":"white","pieces":10,"moves":15,"rating":2297,"themes":"advancedPawn crushing defensiveMove endgame knightEndgame promotion quietMove veryLong","white":"♔ King e2  ♙ Pawn a4, b5, c5, h3","black":"♚ King f4  ♞ Knight c7  ♟ Pawn e3, g6, h5"},{"id":"0UaWs","fen":"6R1/8/8/3p4/P2kb3/4p3/1PP5/1K6 b - - 3 48","solution":["e2","Rg1","Ke3","a5","Kd2","a6","Bxc2+","Ka2","d4","a7","Be4"],"turn":"black","pieces":9,"moves":11,"rating":2709,"themes":"advancedPawn crushing defensiveMove endgame quietMove veryLong","white":"♔ King b1  ♖ Rook g8  ♙ Pawn a4, b2, c2","black":"♚ King d4  ♝ Bishop e4  ♟ Pawn d5, e3"},{"id":"07BTO","fen":"1k6/5p2/K7/1P2pp1p/7P/5P2/6P1/8 w - - 4 41","solution":["g4","fxg4","fxg4","hxg4","h5","g3","h6","g2","h7","g1=Q","h8=Q+","Kc7","Qxe5+"],"turn":"white","pieces":10,"moves":13,"rating":2249,"themes":"advancedPawn advantage endgame exposedKing pawnEndgame promotion quietMove veryLong","white":"♔ King a6  ♙ Pawn b5, f3, g2, h4","black":"♚ King b8  ♟ Pawn e5, f5, f7, h5"},{"id":"076gz","fen":"8/8/8/P7/4kp2/K7/R7/r7 b - - 4 56","solution":["Rxa2+","Kxa2","Kd5","a6","Kc6","a7","Kb7","a8=R","Kxa8","Kb1","f3","Kc2","f2"],"turn":"black","pieces":6,"moves":13,"rating":2198,"themes":"advancedPawn crushing endgame rookEndgame veryLong","white":"♔ King a3  ♖ Rook a2  ♙ Pawn a5","black":"♚ King e4  ♜ Rook a1  ♟ Pawn f4"}]}},"hard":{"short":{"standard":[{"id":"00Mgf","fen":"2RQ4/p4pp1/4p1kp/8/6PP/4qPK1/1r6/8 w - - 0 36","solution":["h5+","Kh7","Qg8#"],"turn":"white","pieces":14,"moves":3,"rating":1132,"themes":"endgame mate mateIn2 short","white":"♔ King g3  ♕ Queen d8  ♖ Rook c8  ♙ Pawn f3, g4, h4","black":"♚ King g6  ♛ Queen e3  ♜ Rook b2  ♟ Pawn a7, e6, f7, g7, h6"},{"id":"00Sr6","fen":"4r2k/p6p/1p3p2/8/2p2P2/P4Q1q/8/3R1RK1 b - - 1 37","solution":["Rg8+","Kf2","Qh2+"],"turn":"black","pieces":14,"moves":3,"rating":1520,"themes":"advantage endgame master short","white":"♔ King g1  ♕ Queen f3  ♖ Rook d1, f1  ♙ Pawn a3, f4","black":"♚ King h8  ♛ Queen h3  ♜ Rook e8  ♟ Pawn a7, b6, c4, f6, h7"},{"id":"00DcC","fen":"5k2/6p1/p1b3Pp/2N2P1r/p7/8/1KP5/5R2 w - - 0 37","solution":["Ne6+","Ke7","Nxg7"],"turn":"white","pieces":13,"moves":3,"rating":1383,"themes":"crushing deflection endgame master short","white":"♔ King b2  ♖ Rook f1  ♘ Knight c5  ♙ Pawn c2, f5, g6","black":"♚ King f8  ♜ Rook h5  ♝ Bishop c6  ♟ Pawn a4, a6, g7, h6"},{"id":"00MFe","fen":"7k/p5pp/2r2q2/2p4Q/8/8/P5PP/3r1R1K w - - 0 30","solution":["Qe8+","Qf8","Qxf8#"],"turn":"white","pieces":14,"moves":3,"rating":1295,"themes":"endgame mate mateIn2 short","white":"♔ King h1  ♕ Queen h5  ♖ Rook f1  ♙ Pawn a2, g2, h2","black":"♚ King h8  ♛ Queen f6  ♜ Rook c6, d1  ♟ Pawn a7, c5, g7, h7"},{"id":"00ME0","fen":"8/1p6/p1b5/4k2p/1PB1p2P/P3P1K1/8/8 w - - 3 36","solution":["Bf7","Bd7","Bxh5"],"turn":"white","pieces":12,"moves":3,"rating":1609,"themes":"bishopEndgame crushing endgame short","white":"♔ King g3  ♗ Bishop c4  ♙ Pawn a3, b4, e3, h4","black":"♚ King e5  ♝ Bishop c6  ♟ Pawn a6, b7, e4, h5"}],"hard":[{"id":"01pSj","fen":"8/5k2/8/2N1p1p1/1P2Pn1p/2P2P1P/5RPK/1r6 b - - 5 37","solution":["Nh5","g3","hxg3+","Kg2","gxf2"],"turn":"black","pieces":15,"moves":5,"rating":2045,"themes":"advancedPawn crushing endgame fork long quietMove","white":"♔ King h2  ♖ Rook f2  ♘ Knight c5  ♙ Pawn b4, c3, e4, f3, g2, h3","black":"♚ King f7  ♜ Rook b1  ♞ Knight f4  ♟ Pawn e5, g5, h4"},{"id":"0104o","fen":"6rk/2QR3p/p5q1/1p4n1/6P1/PP3P2/8/6K1 w - - 1 42","solution":["Qc3+","Qg7","Rxg7"],"turn":"white","pieces":14,"moves":3,"rating":2097,"themes":"advantage endgame master short","white":"♔ King g1  ♕ Queen c7  ♖ Rook d7  ♙ Pawn a3, b3, f3, g4","black":"♚ King h8  ♛ Queen g6  ♜ Rook g8  ♞ Knight g5  ♟ Pawn a6, b5, h7"},{"id":"01uH8","fen":"3r4/R1R5/7k/p2r2pp/3p1P2/7P/6P1/7K w - - 0 51","solution":["f5","R5d7","Rxd7","Rxd7","Rxd7"],"turn":"white","pieces":13,"moves":5,"rating":2438,"themes":"crushing endgame long quietMove rookEndgame","white":"♔ King h1  ♖ Rook a7, c7  ♙ Pawn f4, g2, h3","black":"♚ King h6  ♜ Rook d5, d8  ♟ Pawn a5, d4, g5, h5"},{"id":"02Cmy","fen":"8/p6p/6pk/8/3n4/3Pr3/3q1PPP/2R2QK1 w - - 0 27","solution":["Rd1","Ne2+","Kh1","Rxd3","Rxd2"],"turn":"white","pieces":14,"moves":5,"rating":2056,"themes":"advantage endgame long","white":"♔ King g1  ♕ Queen f1  ♖ Rook c1  ♙ Pawn d3, f2, g2, h2","black":"♚ King h6  ♛ Queen d2  ♜ Rook e3  ♞ Knight d4  ♟ Pawn a7, g6, h7"},{"id":"00qJM","fen":"2R5/p4ppk/1p2q3/6Q1/8/7P/5PPK/4r3 w - - 1 36","solution":["Qh5+","Qh6","Qxf7"],"turn":"white","pieces":13,"moves":3,"rating":2097,"themes":"crushing deflection endgame short","white":"♔ King h2  ♕ Queen g5  ♖ Rook c8  ♙ Pawn f2, g2, h3","black":"♚ King h7  ♛ Queen e6  ♜ Rook e1  ♟ Pawn a7, b6, f7, g7"}]},"medium":{"standard":[{"id":"03RER","fen":"8/1p1k4/4p3/3pPn2/1PpN1P2/2P5/2K5/8 w - - 1 37","solution":["Nxf5","exf5","Kd2","d4","cxd4","b5","d5"],"turn":"white","pieces":12,"moves":7,"rating":1934,"themes":"crushing defensiveMove endgame knightEndgame veryLong","white":"♔ King c2  ♘ Knight d4  ♙ Pawn b4, c3, e5, f4","black":"♚ King d7  ♞ Knight f5  ♟ Pawn b7, c4, d5, e6"},{"id":"05P2i","fen":"8/3k2p1/1p1Np2p/1P2PnPP/8/5K2/8/8 w - - 5 46","solution":["Nxf5","exf5","Kf4","Ke6","g6","Ke7","Kxf5"],"turn":"white","pieces":12,"moves":7,"rating":1963,"themes":"crushing endgame knightEndgame veryLong zugzwang","white":"♔ King f3  ♘ Knight d6  ♙ Pawn b5, e5, g5, h5","black":"♚ King d7  ♞ Knight f5  ♟ Pawn b6, e6, g7, h6"},{"id":"03goR","fen":"2r3k1/R4pbp/6p1/8/1B6/8/P4RPP/6K1 b - - 0 23","solution":["Rc1+","Be1","Rxe1+","Rf1","Bd4+","Kh1","Rxf1#"],"turn":"black","pieces":13,"moves":7,"rating":1281,"themes":"backRankMate deflection endgame fork mate mateIn4 veryLong","white":"♔ King g1  ♖ Rook a7, f2  ♗ Bishop b4  ♙ Pawn a2, g2, h2","black":"♚ King g8  ♜ Rook c8  ♝ Bishop g7  ♟ Pawn f7, g6, h7"},{"id":"02EM7","fen":"2q5/4Q3/4p1k1/3p2P1/3Pp3/p3P3/5PK1/8 w - - 0 53","solution":["Qf6+","Kh7","g6+","Kh6","g7+","Kh7","Qf8"],"turn":"white","pieces":12,"moves":7,"rating":1809,"themes":"advancedPawn crushing discoveredAttack discoveredCheck endgame exposedKing queenEndgame veryLong","white":"♔ King g2  ♕ Queen e7  ♙ Pawn d4, e3, f2, g5","black":"♚ King g6  ♛ Queen c8  ♟ Pawn a3, d5, e4, e6"},{"id":"01idc","fen":"8/8/1r3k2/3R1p2/R5p1/5nP1/P4PK1/8 b - - 2 39","solution":["Rb1","Rxf5+","Kxf5","Rf4+","Kg5","Rxf3","gxf3+"],"turn":"black","pieces":11,"moves":7,"rating":1853,"themes":"endgame master","white":"♔ King g2  ♖ Rook a4, d5  ♙ Pawn a2, f2, g3","black":"♚ King f6  ♜ Rook b6  ♞ Knight f3  ♟ Pawn f5, g4"}],"hard":[{"id":"04zsH","fen":"8/1r2k3/n3p1p1/K7/2P1P1P1/5P2/8/5R2 w - - 0 37","solution":["Kxa6","Rb4","c5","Kd7","Rd1+","Kc6","Rd6+","Kxc5","Rxe6"],"turn":"white","pieces":11,"moves":9,"rating":2215,"themes":"crushing endgame quietMove veryLong","white":"♔ King a5  ♖ Rook f1  ♙ Pawn c4, e4, f3, g4","black":"♚ King e7  ♜ Rook b7  ♞ Knight a6  ♟ Pawn e6, g6"},{"id":"04m1I","fen":"2R5/5kp1/3r4/8/5KP1/3r1PP1/2p5/2R5 b - - 3 48","solution":["Rf6+","Ke4","Rd1","Rc7+","Kg6","Rxg7+","Kxg7"],"turn":"black","pieces":11,"moves":7,"rating":2786,"themes":"crushing endgame rookEndgame veryLong","white":"♔ King f4  ♖ Rook c1, c8  ♙ Pawn f3, g3, g4","black":"♚ King f7  ♜ Rook d3, d6  ♟ Pawn c2, g7"},{"id":"05MGM","fen":"6k1/6p1/3K4/2pPp1P1/2P1Np2/5r2/8/8 w - - 0 49","solution":["Ke7","Kh7","d6","Rd3","Nxc5","Rd4","d7"],"turn":"white","pieces":11,"moves":7,"rating":2832,"themes":"advancedPawn crushing endgame veryLong","white":"♔ King d6  ♘ Knight e4  ♙ Pawn c4, d5, g5","black":"♚ King g8  ♜ Rook f3  ♟ Pawn c5, e5, f4, g7"},{"id":"04BSu","fen":"8/3r1r1k/8/PP4pp/3R4/4P3/3p2PP/1R4K1 b - - 1 35","solution":["Rxd4","exd4","Rc7","Rd1","Rc1","Kf2","Rxd1"],"turn":"black","pieces":14,"moves":7,"rating":2135,"themes":"clearance crushing endgame pin quietMove rookEndgame veryLong","white":"♔ King g1  ♖ Rook b1, d4  ♙ Pawn a5, b5, e3, g2, h2","black":"♚ King h7  ♜ Rook d7, f7  ♟ Pawn d2, g5, h5"},{"id":"042Gi","fen":"8/p7/1p1Pk1p1/8/4KPPP/8/nP6/8 w - - 1 36","solution":["h5","gxh5","gxh5","Nb4","d7","Nc6","h6","Kf7","Kd5"],"turn":"white","pieces":11,"moves":9,"rating":2593,"themes":"advancedPawn crushing endgame knightEndgame veryLong","white":"♔ King e4  ♙ Pawn b2, d6, f4, g4, h4","black":"♚ King e6  ♞ Knight a2  ♟ Pawn a7, b6, g6"}]},"long":{"standard":[{"id":"2RDQe","fen":"8/7p/8/6R1/1Brkpp2/P2p3P/3K1PP1/8 b - - 0 42","solution":["e3+","fxe3+","fxe3+","Kd1","e2+","Kd2","Rc2+","Ke1","Rc1+","Kf2","Rf1+"],"turn":"black","pieces":13,"moves":11,"rating":1849,"themes":"advancedPawn advantage endgame exposedKing veryLong","white":"♔ King d2  ♖ Rook g5  ♗ Bishop b4  ♙ Pawn a3, f2, g2, h3","black":"♚ King d4  ♜ Rook c4  ♟ Pawn d3, e4, f4, h7"},{"id":"0QThr","fen":"8/8/1pk1Kp2/2Pp4/pBp3P1/2P5/2P5/8 b - - 0 42","solution":["bxc5","Ba3","d4","Kxf6","d3","cxd3","cxd3","g5","d2","g6","d1=Q"],"turn":"black","pieces":12,"moves":11,"rating":1583,"themes":"advancedPawn bishopEndgame crushing endgame promotion veryLong","white":"♔ King e6  ♗ Bishop b4  ♙ Pawn c2, c3, c5, g4","black":"♚ King c6  ♟ Pawn a4, b6, c4, d5, f6"},{"id":"0BaFV","fen":"6k1/5pp1/2K1p3/4P3/2P1n3/7p/P7/6B1 w - - 4 42","solution":["a4","g5","a5","Kg7","a6","g4","a7","g3","a8=Q","h2","Bxh2","gxh2","Qa1"],"turn":"white","pieces":11,"moves":13,"rating":1596,"themes":"advancedPawn crushing defensiveMove endgame promotion quietMove veryLong","white":"♔ King c6  ♗ Bishop g1  ♙ Pawn a2, c4, e5","black":"♚ King g8  ♞ Knight e4  ♟ Pawn e6, f7, g7, h3"},{"id":"0pOXI","fen":"4b3/1p6/p2pk3/3N3p/2P1PK2/1P6/P7/8 w - - 0 45","solution":["Nc7+","Ke7","Nxe8","Kxe8","Kg5","Kf7","Kxh5","Ke6","Kg4","Ke5","Kf3"],"turn":"white","pieces":12,"moves":11,"rating":1891,"themes":"crushing defensiveMove endgame fork veryLong","white":"♔ King f4  ♘ Knight d5  ♙ Pawn a2, b3, c4, e4","black":"♚ King e6  ♝ Bishop e8  ♟ Pawn a6, b7, d6, h5"},{"id":"2FEqF","fen":"4Nq1k/8/4Q3/p3N1p1/Pp1P4/4KP2/1Pr5/8 b - - 0 35","solution":["Qf4+","Kd3","Rd2+","Kc4","Qxd4+","Kb5","Qd5+","Qxd5","Rxd5+","Kc4","Rxe5"],"turn":"black","pieces":14,"moves":11,"rating":1932,"themes":"advantage endgame fork master veryLong","white":"♔ King e3  ♕ Queen e6  ♘ Knight e5, e8  ♙ Pawn a4, b2, d4, f3","black":"♚ King h8  ♛ Queen f8  ♜ Rook c2  ♟ Pawn a5, b4, g5"}],"hard":[{"id":"0UCGN","fen":"8/7p/4kppP/p2p4/Pp4P1/1P1K1P2/2P5/8 w - - 0 47","solution":["c3","bxc3","Kxc3","Ke5","b4","d4+","Kc4","axb4","a5","d3","Kxd3","Kd5","a6","Kc6","Kc4","Kb6","Kxb4"],"turn":"white","pieces":14,"moves":17,"rating":2807,"themes":"crushing endgame pawnEndgame quietMove veryLong","white":"♔ King d3  ♙ Pawn a4, b3, c2, f3, g4, h6","black":"♚ King e6  ♟ Pawn a5, b4, d5, f6, g6, h7"},{"id":"0FTvR","fen":"2Q3R1/5p1p/p5pk/3P2P1/2P5/7P/r4q2/4R2K b - - 0 34","solution":["Kxg5","Rg1+","Kh6","R1xg6+","hxg6","Rh8+","Kg7","Qf8+","Kf6","Qd8+","Kf5"],"turn":"black","pieces":15,"moves":11,"rating":2309,"themes":"crushing defensiveMove endgame veryLong","white":"♔ King h1  ♕ Queen c8  ♖ Rook e1, g8  ♙ Pawn c4, d5, g5, h3","black":"♚ King h6  ♛ Queen f2  ♜ Rook a2  ♟ Pawn a6, f7, g6, h7"},{"id":"01aGQ","fen":"1Q6/p5k1/2q4p/1p4p1/4R3/2P3P1/r6P/6K1 w - - 2 37","solution":["Re7+","Kg6","Qg8+","Kh5","Qf7+","Kg4","h3+","Kxg3","Re3+","Kh4","Qxa2"],"turn":"white","pieces":13,"moves":11,"rating":2380,"themes":"crushing endgame fork veryLong","white":"♔ King g1  ♕ Queen b8  ♖ Rook e4  ♙ Pawn c3, g3, h2","black":"♚ King g7  ♛ Queen c6  ♜ Rook a2  ♟ Pawn a7, b5, g5, h6"},{"id":"0NDot","fen":"R1Q5/1p4pk/2Pq2rp/8/5P2/4n2P/6P1/5RK1 b - - 3 30","solution":["Rxg2+","Kh1","Rh2+","Kxh2","Qd2+","Kg3","Qg2+","Kh4","g5+","Kh5","Qe2+","Qg4","Nxg4"],"turn":"black","pieces":15,"moves":13,"rating":2322,"themes":"attraction crushing endgame fork sacrifice veryLong","white":"♔ King g1  ♕ Queen c8  ♖ Rook a8, f1  ♙ Pawn c6, f4, g2, h3","black":"♚ King h7  ♛ Queen d6  ♜ Rook g6  ♞ Knight e3  ♟ Pawn b7, g7, h6"},{"id":"0Xbot","fen":"3r4/8/N1p2p2/P4k2/1P2p3/4P1r1/4K3/1R1R4 b - - 3 45","solution":["Rg2+","Kf1","Rdg8","Re1","Rg1+","Ke2","R8g2+","Kd1","Rxe1+","Kxe1","Rg1+","Kd2","Rxb1"],"turn":"black","pieces":13,"moves":13,"rating":2198,"themes":"advantage attraction endgame quietMove skewer veryLong","white":"♔ King e2  ♖ Rook b1, d1  ♘ Knight a6  ♙ Pawn a5, b4, e3","black":"♚ King f5  ♜ Rook d8, g3  ♟ Pawn c6, e4, f6"}]}}};
+let _longPuzzleCache = null;
+
+async function loadLongPuzzles() {
+  if (_longPuzzleCache) return _longPuzzleCache;
+  try {
+    const res = await fetch('puzzles_long.json');
+    if (res.ok) { _longPuzzleCache = await res.json(); return _longPuzzleCache; }
+  } catch (e) {}
+  // Fallback: small inline subset (10 per bucket) for offline/viewer mode
+  _longPuzzleCache = _INLINE_LONG_PUZZLES;
+  return _longPuzzleCache;
+}
+
+async function fetchLongPuzzle({ pieces, moves, minRating, maxRating }) {
+  const db = await loadLongPuzzles();
+  if (!db) return null;
+
+  const ratingKey = minRating >= 2000 ? 'hard' : 'standard';
+  const pool = db[pieces]?.[moves]?.[ratingKey];
+  if (!pool || pool.length === 0) return null;
+
+  // For standard bucket, also filter by maxRating in case of mixed data
+  const filtered = ratingKey === 'standard'
+    ? pool.filter(p => p.rating >= minRating && p.rating <= maxRating)
+    : pool;
+  if (filtered.length === 0) return null;
+
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+const PUZZLE_PHASES = { IDLE: 0, QUESTION: 1, FEEDBACK: 2 };
+
+const PIECES_LABELS = { easy: '≤ 5 pieces', medium: '6–10 pieces', hard: '11–15 pieces' };
+const MOVES_LABELS  = { short: '1–5 half-moves', medium: '6–10 half-moves', long: '10+ half-moves' };
+
+function PuzzlesGame({ onHome, themeBtn }) {
+  const [piecesDiff, setPiecesDiff] = useState('medium');
+  const [movesDiff,  setMovesDiff]  = useState('medium');
+  const [minRating,  setMinRating]  = useState(500);
+  const [maxRating,  setMaxRating]  = useState(2000);
+  const ratingLabel = minRating === 500 && maxRating === 2000 ? '500–2000' : minRating === 2000 ? '2000+' : '';
+
+  const [phase,      setPhase]      = useState(PUZZLE_PHASES.IDLE);
+  const [puzzle,     setPuzzle]     = useState(null);
+  const [input,      setInput]      = useState('');
+  const [moveIndex,  setMoveIndex]  = useState(0);
+  const [history,    setHistory]    = useState([]);
+  const [wrongInput, setWrongInput] = useState(false);
+  const [solved,     setSolved]     = useState(false);
+  const [gaveUp,     setGaveUp]     = useState(false);
+  const [loading,    setLoading]    = useState(false);
+  const [error,      setError]      = useState(null);
+  const [showRules,  setShowRules]  = useState(false);
+  const [correct,    setCorrect]    = useState(0);
+  const [total,      setTotal]      = useState(0);
+  const inputRef = useRef(null);
+
+  const normSAN = s => s.replace(/[+#!=?]/g, '').toLowerCase();
+
+  const loadPuzzle = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setInput('');
+    setMoveIndex(0);
+    setHistory([]);
+    setWrongInput(false);
+    setSolved(false);
+    setGaveUp(false);
+    setPhase(PUZZLE_PHASES.IDLE);
+    try {
+      const p = await fetchLongPuzzle({ pieces: piecesDiff, moves: movesDiff, minRating, maxRating });
+      if (!p) { setError('No puzzle found for these filters. Try adjusting the difficulty settings.'); setLoading(false); return; }
+      setPuzzle(p);
+      setPhase(PUZZLE_PHASES.QUESTION);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    } catch (e) {
+      setError('Could not load puzzles. Run scripts/generate_long_puzzles.py first.');
+    } finally {
+      setLoading(false);
+    }
+  }, [piecesDiff, movesDiff, minRating, maxRating]);
+
+  function submit() {
+    if (!puzzle || phase !== PUZZLE_PHASES.QUESTION || solved || gaveUp) return;
+    const raw = input.trim();
+    if (!raw) return;
+
+    const solution = puzzle.solution;
+    const expected = solution[moveIndex];
+
+    if (normSAN(raw) !== normSAN(expected)) {
+      setWrongInput(true);
+      setInput('');
+      setTimeout(() => inputRef.current?.focus(), 50);
+      return;
+    }
+
+    setWrongInput(false);
+    const opponentMove = solution[moveIndex + 1] ?? null;
+    const newHistory = [...history, { player: expected, opponent: opponentMove }];
+    setHistory(newHistory);
+    setInput('');
+
+    const nextMoveIndex = moveIndex + 2;
+    if (nextMoveIndex >= solution.length) {
+      setSolved(true);
+      setTotal(t => t + 1);
+      setCorrect(c => c + 1);
+      setPhase(PUZZLE_PHASES.FEEDBACK);
+    } else {
+      setMoveIndex(nextMoveIndex);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }
+
+  function doGiveUp() {
+    setGaveUp(true);
+    setTotal(t => t + 1);
+    setPhase(PUZZLE_PHASES.FEEDBACK);
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter') submit();
+  }
+
+  return (
+    <AppShell title="BLINDFOLD PUZZLES" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
+      headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
+    >
+      {showRules && (
+        <RulesModal onClose={() => setShowRules(false)}>
+          <RuleSection title="Objective" text="A Lichess puzzle position is described in text. Enter your moves one at a time — the opponent's reply is shown after each correct move." />
+          <RuleSection title="Input" text="Type one move at a time in algebraic notation (e.g. Rxf7). Press Enter or ✓ to submit." />
+          <RuleSection title="Attempts" text="Unlimited attempts per move. Give up at any time to reveal the full solution." />
+          <RuleSection title="Filters" text="Piece count controls position complexity. Half-moves = individual ply (1 half-move = one side plays once; a 3-move combination = 6 half-moves). Rating range is the Lichess puzzle rating." />
+        </RulesModal>
+      )}
+
+      {/* Config */}
+      <div style={{ width: '100%', maxWidth: 540, padding: '0 20px', marginBottom: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, width: 52 }}>PIECES</span>
+            {Object.keys(PIECES_LABELS).map(k => (
+              <button key={k} onClick={() => setPiecesDiff(k)} style={chipStyle(k, piecesDiff)}>{PIECES_LABELS[k]}</button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, width: 52 }}>MOVES</span>
+            {Object.keys(MOVES_LABELS).map(k => (
+              <button key={k} onClick={() => setMovesDiff(k)} style={chipStyle(k, movesDiff)}>{MOVES_LABELS[k]}</button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, width: 52 }}>RATING</span>
+            {[[500,2000,'500–2000'],[2000,9999,'2000+']].map(([lo,hi,label]) => (
+              <button key={label} onClick={() => { setMinRating(lo); setMaxRating(hi); }} style={chipStyle(label, ratingLabel)}>{label}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ width: '100%', maxWidth: 540, padding: '0 20px', flex: 1 }}>
+
+        {/* Stats */}
+        {total > 0 && (
+          <div style={{ marginBottom: 14, fontSize: 11, color: T.textDim }}>
+            <span>{correct} / {total} correct</span>
+          </div>
+        )}
+
+        {/* IDLE */}
+        {phase === PUZZLE_PHASES.IDLE && !loading && !error && (
+          <div style={{ animation: 'fadeUp 0.3s ease' }}>
+            <div style={{ background: 'rgba(74,158,202,0.06)', border: '1px solid rgba(74,158,202,0.2)', borderRadius: 6, padding: '10px 16px', marginBottom: 20, fontSize: 12, color: T.textDim, lineHeight: 1.6, textAlign: 'center' }}>
+              <span style={{ color: T.textBright }}>Enter your moves one at a time. The opponent reply is shown after each correct move.</span>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <button onClick={loadPuzzle} style={{ padding: '14px 48px', border: `1px solid ${T.accent}`, borderRadius: 4, background: 'rgba(74,158,202,0.08)', color: T.accent, fontSize: 16, fontFamily: 'inherit', cursor: 'pointer', fontWeight: 500, letterSpacing: 1, animation: 'glowPulse 2s infinite' }}>START</button>
+            </div>
+          </div>
+        )}
+
+        {loading && <div style={{ textAlign: 'center', color: T.textDim, fontSize: 13, padding: '40px 0' }}>Loading puzzle...</div>}
+        {error && <div style={{ background: T.redDim, border: '1px solid rgba(224,85,85,0.3)', borderRadius: 6, padding: '12px 16px', fontSize: 13, color: T.red }}>{error}</div>}
+
+        {/* QUESTION + FEEDBACK */}
+        {(phase === PUZZLE_PHASES.QUESTION || phase === PUZZLE_PHASES.FEEDBACK) && puzzle && (
+          <div style={{ animation: 'fadeUp 0.2s ease' }}>
+
+            {/* Position + rating */}
+            <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: '20px 24px', marginBottom: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 2, color: T.textBright, background: T.panelBorder, border: `1px solid ${T.panelBorder}`, borderRadius: 4, padding: '6px 12px' }}>
+                  {puzzle.turn === 'white' ? '♔ WHITE TO MOVE' : '♚ BLACK TO MOVE'}
+                </div>
+                <div style={{ fontSize: 11, color: T.textDim, paddingTop: 6 }}>rating {puzzle.rating}</div>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginBottom: 6 }}>WHITE</div>
+                <div style={{ fontSize: 13, color: T.textBright, lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.white}</div>
+              </div>
+              <div style={{ height: 1, background: T.panelBorder, margin: '12px 0' }} />
+              <div>
+                <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginBottom: 6 }}>BLACK</div>
+                <div style={{ fontSize: 13, color: T.text, lineHeight: 2, letterSpacing: 0.5 }}>{puzzle.black}</div>
+              </div>
+            </div>
+
+            {/* Move history */}
+            {history.length > 0 && (
+              <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: '12px 16px', marginBottom: 14 }}>
+                <div style={{ fontSize: 10, color: T.textDim, letterSpacing: 2, marginBottom: 8 }}>▸ MOVES PLAYED</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, fontSize: 13, lineHeight: 2 }}>
+                  {history.map((entry, i) => {
+                    const sIdx = i * 2;
+                    const fullMove = Math.floor(sIdx / 2) + 1;
+                    const isBlackFirst = puzzle.turn === 'black';
+                    const showNum = !isBlackFirst || i > 0;
+                    return (
+                      <span key={i}>
+                        {(!isBlackFirst || i === 0) && (
+                          <span style={{ color: T.textDim, marginRight: 2 }}>
+                            {fullMove}{isBlackFirst && i === 0 ? '...' : '.'}
+                          </span>
+                        )}
+                        <span style={{ color: T.green, fontWeight: 600, marginRight: 4 }}>{entry.player}</span>
+                        {entry.opponent && (
+                          <span style={{ color: T.textDim, marginRight: 4 }}>{entry.opponent}</span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Wrong move */}
+            {wrongInput && (
+              <div style={{ background: T.redDim, border: '1px solid rgba(224,85,85,0.3)', borderRadius: 6, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: T.red }}>
+                ✗ Incorrect — try again.
+              </div>
+            )}
+
+            {/* Solved */}
+            {solved && (
+              <div style={{ background: T.greenDim, border: '1px solid rgba(60,168,104,0.3)', borderRadius: 6, padding: '12px 16px', marginBottom: 14, fontSize: 13, color: T.green }}>
+                ✓ Correct!
+              </div>
+            )}
+
+            {/* Give up — solution */}
+            {gaveUp && (
+              <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: '12px 16px', fontSize: 12, marginBottom: 14 }}>
+                <div style={{ color: T.textDim, marginBottom: 8, fontSize: 10, letterSpacing: 2 }}>SOLUTION</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {puzzle.solution.map((move, i) => {
+                    const isPlayerMove = puzzle.turn === 'white' ? i % 2 === 0 : i % 2 === 1;
+                    const alreadyPlayed = i < history.length * 2;
+                    return (
+                      <span key={i} style={{ fontWeight: isPlayerMove ? 600 : 400, color: alreadyPlayed ? T.textDim : isPlayerMove ? T.textBright : T.textDim, fontSize: 13, opacity: alreadyPlayed ? 0.5 : 1 }}>
+                        {move}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Lichess link */}
+            {(solved || gaveUp) && puzzle.id && (
+              <div style={{ marginBottom: 14 }}>
+                <a href={`https://lichess.org/training/${puzzle.id}`} target="_blank" rel="noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12, color: T.accent, textDecoration: 'none', border: `1px solid ${T.accentDim}`, borderRadius: 4, padding: '4px 10px', fontFamily: 'inherit', letterSpacing: 0.5 }}>
+                  View on Lichess ↗
+                </a>
+              </div>
+            )}
+
+            {/* Input */}
+            {phase === PUZZLE_PHASES.QUESTION && !solved && !gaveUp && (
+              <div style={{ background: T.panel, border: `1px solid ${T.panelBorder}`, borderRadius: 6, padding: '16px 20px', marginBottom: 14 }}>
+                <div style={{ fontSize: 9, color: T.accentDim, letterSpacing: 3, marginBottom: 10 }}>
+                  ▸ YOUR MOVE
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <input ref={inputRef} value={input}
+                    onChange={e => { setInput(e.target.value); setWrongInput(false); }}
+                    onKeyDown={handleKey}
+                    placeholder="e.g. Rxf7"
+                    style={{ flex: 1, background: T.bg, border: `1px solid ${wrongInput ? T.red : T.panelBorder}`, borderRadius: 4, padding: '10px 12px', color: T.textBright, fontSize: 14, fontFamily: 'inherit', letterSpacing: 1 }}
+                  />
+                  <button onClick={submit} style={{ padding: '10px 18px', border: `1px solid ${T.accent}`, borderRadius: 4, background: 'rgba(74,158,202,0.1)', color: T.accent, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer', fontWeight: 600 }}>✓</button>
+                </div>
+                <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+                  <button onClick={doGiveUp} style={{ background: 'transparent', border: `1px solid ${T.red}`, borderRadius: 4, color: T.red, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', letterSpacing: 1, padding: '6px 14px' }}>GIVE UP</button>
+                  <button onClick={loadPuzzle} style={{ background: 'transparent', border: `1px solid ${T.accent}`, borderRadius: 4, color: T.accent, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', letterSpacing: 1, padding: '6px 14px' }}>NEW PUZZLE</button>
+                </div>
+              </div>
+            )}
+
+            {/* Next puzzle */}
+            {phase === PUZZLE_PHASES.FEEDBACK && (
+              <div style={{ textAlign: 'center', marginTop: 16 }}>
+                <button onClick={loadPuzzle} style={{ padding: '10px 32px', border: `1px solid ${T.accent}`, borderRadius: 4, background: 'rgba(74,158,202,0.08)', color: T.accent, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer', fontWeight: 500, letterSpacing: 1, animation: 'glowPulse 2s infinite' }}>
+                  NEXT PUZZLE
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
+
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 
@@ -2487,21 +2814,21 @@ const T = {
 };
 
 const DARK_VARS = `
-  --bg: #0b0e0f; --panel: #0f1314; --panelBorder: #1a2224;
-  --text: #8a9a9e; --textBright: #d0dce0; --textDim: #4a5a5e;
-  --accent: #c49a3c; --accentDim: #7a6228;
-  --green: #3ca868; --greenDim: #1a3a28;
-  --red: #c44a3c; --redDim: #2a1614;
-  --scanline: rgba(60,168,104,0.03);
+  --bg: #0d1117; --panel: #161b22; --panelBorder: #21303f;
+  --text: #8fa8bc; --textBright: #cfe0ed; --textDim: #3d5468;
+  --accent: #4a9eca; --accentDim: #2a5a7a;
+  --green: #3ca868; --greenDim: #0e2a1c;
+  --red: #e05555; --redDim: #2a1414;
+  --scanline: rgba(74,158,202,0.025);
 `;
 
 const LIGHT_VARS = `
-  --bg: #f4f1eb; --panel: #fffdf7; --panelBorder: #d8cdb4;
-  --text: #4a4030; --textBright: #1a1208; --textDim: #9a8e78;
-  --accent: #a07820; --accentDim: #c8a860;
-  --green: #2a8850; --greenDim: #d0f0de;
-  --red: #a83028; --redDim: #f5ddd8;
-  --scanline: rgba(160,120,32,0.03);
+  --bg: #f0ede6; --panel: #faf8f3; --panelBorder: #d4cfc5;
+  --text: #2d3f52; --textBright: #0f1e2e; --textDim: #8a9aaa;
+  --accent: #1e5080; --accentDim: #a0c0d8;
+  --green: #1e7a48; --greenDim: #d4ede0;
+  --red: #c03030; --redDim: #f5dede;
+  --scanline: rgba(30,80,128,0.02);
 `;
 
 const BASE_STYLE = `
@@ -2510,7 +2837,7 @@ const BASE_STYLE = `
   body { background: var(--bg); transition: background 0.2s; }
   @keyframes boardReveal { from { opacity:0; transform:scale(0.96); filter:blur(3px); } to { opacity:1; transform:scale(1); filter:blur(0); } }
   @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes glowPulse { 0%,100% { box-shadow:0 0 0 rgba(196,154,60,0); } 50% { box-shadow:0 0 18px rgba(196,154,60,0.12); } }
+  @keyframes glowPulse { 0%,100% { box-shadow:0 0 0 rgba(74,158,202,0); } 50% { box-shadow:0 0 18px rgba(74,158,202,0.12); } }
   button:hover { filter: brightness(1.1); }
   input:focus { outline: none; border-color: var(--accent) !important; }
   input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -2542,6 +2869,7 @@ export default function App() {
   );
 
   if (screen === "minefield")   return <MinefieldGame    onHome={() => setScreen("home")} themeBtn={themeBtn} />;
+  if (screen === "puzzles")     return <PuzzlesGame      onHome={() => setScreen("home")} themeBtn={themeBtn} />;
   if (screen === "sniper")      return <SniperGame       onHome={() => setScreen("home")} themeBtn={themeBtn} />;
   if (screen === "coordinates") return <CoordinatesGame  onHome={() => setScreen("home")} themeBtn={themeBtn} />;
   if (screen === "fork")        return <ForkGame         onHome={() => setScreen("home")} themeBtn={themeBtn} />;

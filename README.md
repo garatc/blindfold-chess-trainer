@@ -11,6 +11,9 @@ A collection of blindfold chess training exercises. No board — you work from d
 ### Blindfold Minefield — Hard
 Navigate a piece from its starting square to a target, avoiding all squares controlled by enemy pieces. The position is described in text. No board is shown.
 
+### Blindfold Puzzles — Hard
+Real Lichess puzzles, no board. Enter your moves one at a time — the opponent's reply is shown after each correct move. Highly customizable: filter by piece count, number of half-moves, and rating range (up to 2000+).
+
 ### Blindfold Tracker — Medium
 A sequence of moves is announced in algebraic notation. No board updates. Follow the game mentally and identify which black pieces your tracked piece can capture from its final position.
 
@@ -22,8 +25,6 @@ A knight or bishop and two enemy pieces are described by their squares. Find a s
 
 ### Blindfold Coordinates — Easy
 A square is named. Answer whether it is light or dark. Score mode (10 questions) or Streak.
-
-*More exercises coming.*
 
 ---
 
