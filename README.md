@@ -1,29 +1,29 @@
 # Blindfold Chess Trainer ♟️
 
-A growing collection of blindfold chess training games. No board to look at — pure mental visualization.
+A collection of blindfold chess training exercises. No board — you work from descriptions and algebraic notation alone.
 
 **Play online → [garatc.github.io/blindfold-chess-trainer](https://garatc.github.io/blindfold-chess-trainer/)**
 
 ---
 
-## Games
+## Exercises
 
-### 💣 Blindfold Minefield — Hard
-Navigate your piece from its starting square to a target in the fewest moves — without stepping on any square controlled by enemy pieces. No board is shown. You work entirely from the algebraic description of the position.
+### Blindfold Minefield — Hard
+Navigate a piece from its starting square to a target, avoiding all squares controlled by enemy pieces. The position is described in text. No board is shown.
 
-### 🎯 Blindfold Sniper — Medium
-A real chess position is shown, with one white piece highlighted. A random sequence of moves is then announced in algebraic notation — no visual updates. Follow the game in your head and identify which black pieces your tracked piece can capture at the end of the sequence.
+### Blindfold Tracker — Medium
+A sequence of moves is announced in algebraic notation. No board updates. Follow the game mentally and identify which black pieces your tracked piece can capture from its final position.
 
-### ♛ Blindfold Mate in One — Medium
-A position from a real Lichess puzzle is described in text — no board shown. Find any move that delivers checkmate in one. All valid mating moves are accepted. Three difficulty levels based on the number of pieces on the board (Easy: ≤5, Medium: 6–10, Hard: 11–15).
+### Blindfold Mate in One — Medium
+A position from the Lichess puzzle database is described in text. Find the move that delivers checkmate in one. Three difficulty levels based on piece count (Easy: ≤5, Medium: 6–10, Hard: 11–15).
 
-### ⚔️ Blindfold Fork Finder — Easy
-A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. Score mode (5 puzzles) or Streak. An explanatory board is revealed on wrong answers.
+### Blindfold Fork Finder — Easy
+A knight or bishop and two enemy pieces are described by their squares. Find a square from which your piece attacks both simultaneously. Score mode (5 puzzles) or Streak. The board is revealed on wrong answers.
 
-### 🗺️ Blindfold Coordinates — Easy
-A square is named — answer whether it's light or dark as fast as you can. Two modes: **Score** (10 questions, tracks accuracy and average response time) and **Streak** (keep going until your first mistake).
+### Blindfold Coordinates — Easy
+A square is named. Answer whether it is light or dark. Score mode (10 questions) or Streak.
 
-*More games coming.*
+*More exercises coming.*
 
 ---
 
@@ -44,4 +44,5 @@ Then open [http://localhost:5173/blindfold-chess-trainer/](http://localhost:5173
 
 ## Credits
 
-Chess pieces: [cburnett](https://en.wikipedia.org/wiki/User:Cburnett) — CC BY-SA 3.0
+Chess pieces: [cburnett](https://en.wikipedia.org/wiki/User:Cburnett) — CC BY-SA 3.0  
+Puzzles: [Lichess](https://lichess.org) puzzle database — CC BY-NC-SA 4.0

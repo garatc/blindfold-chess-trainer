@@ -299,41 +299,36 @@ const GAMES = [
   {
     id: "minefield",
     title: "Blindfold Minefield",
-    icon: "💣",
     tagline: "Navigate the minefield",
-    description: "Move your piece from start to target in the fewest moves — without stepping on any square controlled by enemy pieces. No board. Pure visualization.",
+    description: "Navigate a piece from its starting square to a target, avoiding all squares controlled by enemy pieces. The position is described in text. No board is shown.",
     difficulty: "Hard",
   },
   {
     id: "sniper",
-    title: "Blindfold Sniper",
-    icon: "🎯",
-    tagline: "Who's in your crosshairs?",
-    description: "A position is given with a white piece to track. A random sequence of moves is generated in algebraic notation — no visual updates. Follow the moves in your head and click the black pieces your piece can capture at the end of the sequence.",
+    title: "Blindfold Tracker",
+    tagline: "Which enemy pieces are being attacked?",
+    description: "A sequence of moves is announced in algebraic notation. No board updates. Follow the game mentally and identify which black pieces your tracked piece can capture from its final position.",
     difficulty: "Medium",
   },
   {
     id: "mate1",
     title: "Blindfold Mate in One",
-    icon: "♛",
-    tagline: "Find the killing blow",
-    description: "A position is described in text — no board shown. Find the move that delivers checkmate in one. All valid mating moves are accepted. Choose your difficulty by number of pieces on the board.",
+    tagline: "Find the mate in one",
+    description: "A position from the Lichess puzzle database is described in text. Find the move that delivers checkmate in one. Three difficulty levels based on piece count (Easy: ≤5, Medium: 6–10, Hard: 11–15).",
     difficulty: "Medium",
   },
   {
     id: "fork",
     title: "Blindfold Fork Finder",
-    icon: "⚔️",
-    tagline: "Two for the price of one",
-    description: "A knight or bishop and 2 black pieces are placed on the board — described in text only. Find a square from which your piece attacks both enemy pieces simultaneously. No board. Pure calculation.",
+    tagline: "Find the fork",
+    description: "A knight or bishop and two enemy pieces are described by their squares. Find a square from which your piece attacks both simultaneously. Score mode (5 puzzles) or Streak. The board is revealed on wrong answers.",
     difficulty: "Easy",
   },
   {
     id: "coordinates",
     title: "Blindfold Coordinates",
-    icon: "🗺️",
-    tagline: "Light or dark?",
-    description: "A square is named — say whether it's light or dark as fast as you can. Score mode: 10 questions, track your accuracy and average time. Streak mode: how far can you go before your first mistake?",
+    tagline: "Light or dark square?",
+    description: "A square is named. Answer whether it is light or dark. Score mode (10 questions) or Streak.",
     difficulty: "Easy",
   },
 ];
@@ -350,7 +345,7 @@ function HomeScreen({ onSelect, themeBtn }) {
       <div style={{ width: "100%", maxWidth: 700, padding: "48px 20px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD</h1>
+            <h1 style={{ fontSize: 26, fontWeight: 600, color: T.textBright, letterSpacing: 3 }}>BLINDFOLD TRAINER</h1>
             <div style={{ fontSize: 11, color: T.textDim, letterSpacing: 4, marginTop: 4 }}>CHESS TRAINING SUITE</div>
           </div>
           {themeBtn}
@@ -363,7 +358,6 @@ function HomeScreen({ onSelect, themeBtn }) {
               onMouseEnter={e => e.currentTarget.style.borderColor = T.accent}
               onMouseLeave={e => e.currentTarget.style.borderColor = T.panelBorder}
             >
-              <div style={{ fontSize: 24, lineHeight: 1, marginBottom: 8 }}>{game.icon}</div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.textBright, letterSpacing: 0.5 }}>{game.title}</div>
                 <div style={{ fontSize: 9, color: game.difficulty === "Hard" ? T.red : game.difficulty === "Medium" ? T.accent : T.green, flexShrink: 0, marginLeft: 4, fontWeight: 600 }}>{game.difficulty}</div>
@@ -1159,7 +1153,7 @@ function generateSniperPuzzle(numHalfMoves = 6) {
 
 
 // ══════════════════════════════════════════════════════════════════════════════
-// GAME 2 — BLINDFOLD SNIPER
+// GAME 2 — BLINDFOLD TRACKER
 // ══════════════════════════════════════════════════════════════════════════════
 
 const NUM_TARGETS = 6;
@@ -1281,7 +1275,7 @@ function SniperGame({ onHome, themeBtn }) {
   };
 
   if (loading) return (
-    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn} headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}>
+    <AppShell title="TRACKER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn} headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}>
       <div style={{ width: "100%", maxWidth: 540, padding: "40px 20px", textAlign: "center", color: T.textDim, fontSize: 13 }}>Generating puzzle...</div>
     </AppShell>
   );
@@ -1299,7 +1293,7 @@ function SniperGame({ onHome, themeBtn }) {
   }
 
   return (
-    <AppShell title="SNIPER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
+    <AppShell title="TRACKER" subtitle="BLINDFOLD CHESS TRAINER" onHome={onHome} themeBtn={themeBtn}
       headerRight={<HowToPlayBtn onClick={() => setShowRules(true)} />}
     >
       {showRules && (
